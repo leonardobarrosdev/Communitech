@@ -1,0 +1,76 @@
+## 🏗️ **Design e Arquitetura da Solução**
+
+---
+
+### 1. 📚 Arquitetura Geral
+
+A plataforma será construída sobre a arquitetura **modular do Django**, com separação de apps por domínio e responsabilidades bem definidas.
+
+#### Camadas da Aplicação:
+
+```
+Frontend (HTMX + Tailwind)
+       |
+Views + Templates (Controllers)
+       |
+Application Services (Use Cases)
+       |
+Models (Domain / ORM)
+       |
+Infra (DB, Storage, Stripe, Cloudinary)
+```
+
+---
+
+### 2. 🧱 Módulos da Aplicação
+
+| App        | Responsabilidade Principal                                |
+| ---------- | --------------------------------------------------------- |
+| `users`    | Registro, login, perfis, papéis (`student`, `instructor`) |
+| `courses`  | Cursos, seções, lições, tipos de conteúdo, progresso      |
+| `payments` | Lógica de checkout, planos, assinatura, integração Stripe |
+| `core`     | Landing page, menus, configuração geral da plataforma     |
+| `shared`   | Módulos comuns: mixins, utils, form helpers, etc.         |
+
+---
+
+### 3. 📦 Comunicação entre Camadas
+
+* Os módulos se comunicam **via import direto** entre apps (`from users.models import User`), mantendo dependências unidirecionais.
+* Views devem ser **finas**: orquestram apenas o fluxo e delegam lógica para services no domínio (`services.py`, `managers.py`).
+* Processos longos ou agendados (futuro): **tasks com Celery**.
+
+---
+
+### 4. 🔁 Componentes Externos
+
+| Serviço        | Integração                   | Descrição                               |
+| -------------- | ---------------------------- | --------------------------------------- |
+| **Cloudinary** | REST API via SDK             | Upload e entrega de imagens e vídeos    |
+| **Stripe**     | REST API via `stripe-python` | Checkout e Webhooks                     |
+| **PostgreSQL** | Django ORM                   | Banco de dados relacional principal     |
+| **HTMX**       | HTML over the wire           | Atualização parcial de views, Ajax leve |
+
+---
+
+### 5. ⚙️ Infraestrutura
+
+| Ambiente        | Ferramenta                            |
+| --------------- | ------------------------------------- |
+| Desenvolvimento | Docker Compose (`web`, `db`, `nginx`) |
+| Produção        | VPS (NGINX + Gunicorn + Docker)       |
+| Deploy          | SSH + GitHub Actions (futuro)         |
+| Assets (CSS)    | Tailwind compilado com PostCSS        |
+| Banco de Dados  | PostgreSQL                            |
+| Logs            | stdout + arquivos rotacionados        |
+| Monitoramento   | UptimeRobot (básico, externo)         |
+
+---
+
+### 6. 📈 Escalabilidade e Performance
+
+* Banco otimizado com **UUID PKs**, **índices em campos usados em filtros** (`user_id`, `lesson_id`).
+* Lógica de acesso a curso controlada por roles e registros.
+* Uso futuro de **cache local ou Redis** para planos de preços e menu.
+* Uploads e mídia sempre fora do servidor (Cloudinary via URL/CDN).
+* HTMX reduz a necessidade de SPA e melhora tempo de resposta.

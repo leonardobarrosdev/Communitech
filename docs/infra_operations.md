@@ -1,0 +1,123 @@
+## 🧰 **Operações e Infraestrutura (Deploy e DevOps)**
+
+Este documento descreve como o ambiente será configurado, como o deploy será feito e boas práticas operacionais para manter a plataforma estável, segura e escalável.
+
+---
+
+### 1. 🏗️ Ambiente de Desenvolvimento
+
+#### Ferramentas
+
+* Docker Compose com os seguintes serviços:
+
+  * `web`: Django + Gunicorn + django-tailwind
+  * `db`: PostgreSQL 15
+  * `nginx`: Servidor reverso
+  * (futuro) `celery` + `redis` para tarefas assíncronas
+
+#### Comandos de uso comum
+
+```bash
+docker-compose up -d --build
+docker-compose exec web python manage.py migrate
+docker-compose exec web python manage.py createsuperuser
+```
+
+#### Variáveis de Ambiente (.env)
+
+```
+DEBUG=True
+SECRET_KEY=...
+DATABASE_URL=postgres://user:pass@db:5432/dbname
+CLOUDINARY_URL=...
+STRIPE_API_KEY=...
+```
+
+---
+
+### 2. 🚀 Deploy em Produção (VPS com Docker)
+
+#### Requisitos do Servidor
+
+* Ubuntu 22.04+
+* Docker 24+
+* Docker Compose v2
+* Firewall (UFW ou iptables) configurado
+
+#### Stack
+
+* NGINX como proxy reverso (porta 80/443)
+* Gunicorn como servidor WSGI
+* PostgreSQL local ou serviço gerenciado (ex: Supabase, NeonDB)
+* Certificados HTTPS com Let’s Encrypt (via Certbot)
+
+#### Estratégia
+
+* Deploy via Git + `docker-compose.prod.yml`
+* CI/CD opcional via GitHub Actions:
+
+  * Push → build docker image → deploy via SSH
+
+---
+
+### 3. 📂 Estrutura de Deploy
+
+```
+/app
+├── docker/
+│   ├── nginx/
+│   ├── django/
+│   └── postgres/
+├── docker-compose.yml
+├── docker-compose.prod.yml
+├── .env
+```
+
+---
+
+### 4. 🔒 Segurança Operacional
+
+| Item                    | Medida                                       |
+| ----------------------- | -------------------------------------------- |
+| Variáveis secretas      | Armazenadas em `.env`, nunca versionadas     |
+| Login/admin             | Protegido por `@login_required` e roles      |
+| Headers de segurança    | Configurados no NGINX (`X-Frame`, CSP, etc.) |
+| Backup de banco         | Script programado (via cron/docker-volume)   |
+| Atualizações de pacotes | Manuais semanais com `apt upgrade`           |
+| TLS                     | Certbot com auto-renovação                   |
+
+---
+
+### 5. 📈 Monitoramento e Logs
+
+* **Logs:** direcionados para `stdout` (Docker logging)
+* **Monitoramento básico:** UptimeRobot (endpoint health checks)
+* **Escalabilidade futura:**
+
+  * Deploy com autoscaling (Render, Railway ou ECS)
+  * Redis para cache de páginas e sessões
+
+---
+
+### 6. ☁️ Serviços de Terceiros
+
+| Serviço       | Uso                                     |
+| ------------- | --------------------------------------- |
+| Cloudinary    | Upload e CDN de mídia                   |
+| Stripe        | Checkout e controle de acesso futuro    |
+| GitHub        | Repositório privado + CI/CD via Actions |
+| Mail (futuro) | SMTP para notificações                  |
+
+---
+
+📌 **Documento de Operações e Infraestrutura finalizado.**
+
+---
+
+🎯 **Resumo: Design Docs Concluídos com Sucesso**
+
+1. ✅ Documento de Requisitos do Produto
+2. ✅ Decisões Técnicas
+3. ✅ Guidelines de Engenharia
+4. ✅ Design e Arquitetura da Solução
+5. ✅ Operações e Infraestrutura
