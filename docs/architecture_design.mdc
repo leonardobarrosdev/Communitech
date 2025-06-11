@@ -55,15 +55,15 @@ Infra (DB, Storage, Stripe, Cloudinary)
 
 ### 5. ⚙️ Infraestrutura
 
-| Ambiente        | Ferramenta                            |
-| --------------- | ------------------------------------- |
-| Desenvolvimento | Docker Compose (`web`, `db`, `nginx`) |
-| Produção        | VPS (NGINX + Gunicorn + Docker)       |
-| Deploy          | SSH + GitHub Actions (futuro)         |
-| Assets (CSS)    | Tailwind compilado com PostCSS        |
-| Banco de Dados  | PostgreSQL                            |
-| Logs            | stdout + arquivos rotacionados        |
-| Monitoramento   | UptimeRobot (básico, externo)         |
+| Ambiente        | Ferramenta                                  |
+| --------------- | ------------------------------------------- |
+| Desenvolvimento | uv +| Docker Compose (`web`, `db`, `nginx`) |
+| Produção        | VPS (NGINX + Gunicorn + Docker)             |
+| Deploy          | SSH + GitHub Actions (futuro)               |
+| Assets (CSS)    | Tailwind compilado com PostCSS              |
+| Banco de Dados  | PostgreSQL                                  |
+| Logs            | stdout + arquivos rotacionados              |
+| Monitoramento   | UptimeRobot (básico, externo)               |
 
 ---
 

@@ -1,0 +1,70 @@
+## 🎨 **Identidade Visual da Plataforma de Comunitu (Cursos e Comunidade)**
+
+### 1. 🧠 **Conceito Central**
+
+A plataforma é:
+
+* Modular e expansível (começa com cursos, evolui para comunidade)
+* Voltada para criadores, educadores e membros engajados
+* Moderna, limpa e confiável (experiência semelhante ao Circle.so)
+
+### 2. 🌈 **Paleta de Cores (Sugestão)**
+
+| Cor           | Uso Sugerido                | Código HEX                        |
+| ------------- | --------------------------- | --------------------------------- |
+| Azul profundo | Cor principal (confiança)   | `#1E3A8A` (Tailwind: `blue-900`)  |
+| Azul claro    | Destaques, links, botões    | `#3B82F6` (Tailwind: `blue-500`)  |
+| Cinza claro   | Backgrounds, seções neutras | `#F3F4F6` (Tailwind: `gray-100`)  |
+| Branco        | Fundo geral                 | `#FFFFFF`                         |
+| Verde suave   | Status positivo / concluído | `#10B981` (Tailwind: `green-500`) |
+
+> 🎨 Customizar com `tailwind.config.js` + Flowbite para componentes.
+
+---
+
+### 3. 🔠 **Tipografia**
+
+* **Título / Destaques:** `Poppins` ou `Inter` (limpas, modernas, amigáveis)
+* **Texto normal:** `Inter`, `Roboto`, `Open Sans`
+* **Código Tailwind:**
+
+  ```js
+  fontFamily: {
+    sans: ['Inter', 'sans-serif'],
+  }
+  ```
+
+---
+
+### 4. 🔰 **Estilo Visual**
+
+* Minimalista e centrado no conteúdo
+* Ícones simples (Feather, Heroicons)
+* Componentes arredondados, interface arejada
+* Emoções-chave: **clareza, comunidade, leveza, profissionalismo**
+
+---
+
+## ✨ **Sugestões de Nome e Logo**
+
+Aqui estão algumas ideias de **nome com significado**, curtos, disponíveis como marca e com identidade forte:
+
+| Nome          | Significado / Inspiração           | Slogan Exemplo                            |
+| ------------- | ---------------------------------- | ----------------------------------------- |
+| **Comunitu**  | Comunidade + tutorial              | *“Aprenda, conect-se e ensine.”*          |
+
+---
+
+### 5. 🖼️ **Logotipo (Estilo e Elementos)**
+
+#### Estilos sugeridos:
+
+* **Logotipo tipográfico ou simplesmente Comunitu** com símbolo à esquerda (ex: um anel, círculo interligado, cubo modular)
+* **Cores baseadas na paleta acima**
+* Ícone responsivo (usável como favicon, ícone de app, etc.)
+
+#### Exemplos de referência:
+
+* [Notion](https://www.notion.so): simples, tipográfico
+* [Circle.so](https://circle.so): ícone + texto arredondado
+* [Slack](https://slack.com): combinação de cores e modularidade
