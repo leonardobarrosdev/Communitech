@@ -10,7 +10,7 @@ Este documento descreve como o ambiente será configurado, como o deploy será f
 
 * Docker Compose com os seguintes serviços:
 
-  * `web`: Django + Gunicorn + django-tailwind
+  * `api`: Django + Gunicorn
   * `db`: PostgreSQL 15
   * `nginx`: Servidor reverso
   * (futuro) `celery` + `redis` para tarefas assíncronas
@@ -80,7 +80,7 @@ STRIPE_API_KEY=...
 | Item                    | Medida                                       |
 | ----------------------- | -------------------------------------------- |
 | Variáveis secretas      | Armazenadas em `.env`, nunca versionadas     |
-| Login/admin             | Protegido por `@login_required` e roles      |
+| Login/admin             | Protegido por `TokenAuthentication` e roles      |
 | Headers de segurança    | Configurados no NGINX (`X-Frame`, CSP, etc.) |
 | Backup de banco         | Script programado (via cron/docker-volume)   |
 | Atualizações de pacotes | Manuais semanais com `apt upgrade`           |
@@ -107,17 +107,3 @@ STRIPE_API_KEY=...
 | Stripe        | Checkout e controle de acesso futuro    |
 | GitHub        | Repositório privado + CI/CD via Actions |
 | Mail (futuro) | SMTP para notificações                  |
-
----
-
-📌 **Documento de Operações e Infraestrutura finalizado.**
-
----
-
-🎯 **Resumo: Design Docs Concluídos com Sucesso**
-
-1. ✅ Documento de Requisitos do Produto
-2. ✅ Decisões Técnicas
-3. ✅ Guidelines de Engenharia
-4. ✅ Design e Arquitetura da Solução
-5. ✅ Operações e Infraestrutura

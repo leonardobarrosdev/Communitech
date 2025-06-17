@@ -8,14 +8,12 @@ Este guia define os padrões e boas práticas a serem seguidos pela equipe de en
 
 ```bash
 ├── apps/
-│   ├── users/            # Autenticação, perfis, papéis
-│   ├── courses/          # Cursos, seções, lições, progresso
-│   ├── payments/         # Integração com Stripe
+│   ├── user/             # Autenticação, perfis, papéis
+│   ├── course/           # Cursos, seções, lições, progresso
+│   ├── payment/          # Integração com Stripe
 │   ├── core/             # Configurações globais, menus, landing
 │   └── shared/           # Helpers reutilizáveis (utils, mixins)
 ├── config/               # Configuração geral do projeto Django
-├── templates/            # Templates HTML com Tailwind + HTMX
-├── static/               # JS, CSS compilado
 ├── docker/               # Dockerfiles e configs
 ├── .env, .dockerignore   # Configs do ambiente
 ```
@@ -30,15 +28,9 @@ Este guia define os padrões e boas práticas a serem seguidos pela equipe de en
 * Imports organizados com **isort**
 * Linters: **flake8** ou **ruff**
 * Nomes de campos e métodos em **snake\_case**
-* Tabelas com nomes no plural (`courses`, `users`, etc.)
+* Tabelas com nomes no plural (`courses`, `Profiles`, etc.)
 * Models com `Meta: ordering` e `__str__` implementado
 * UUIDField como padrão para chaves primárias
-
-#### Templates (HTMX + Tailwind)
-
-* Componentes com **Flowbite**
-* Lógica mínima em templates: usar `inclusion_tags` ou `context processors`
-* Organização por página/tela (ex: `templates/courses/detail.html`)
 
 ---
 
@@ -50,7 +42,7 @@ Este guia define os padrões e boas práticas a serem seguidos pela equipe de en
 | Integração             | `pytest`                 | Rotas, views principais |
 | E2E (quando aplicável) | Cypress (futuro)         | Fluxo de cursos e login |
 
-* Criar testes para **cada model, view e formulário**
+* Criar testes para **cada model, serializer e view**
 * Testes de integração para progresso do aluno e fluxo de publicação de curso
 
 ---
