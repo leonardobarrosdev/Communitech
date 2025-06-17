@@ -10,10 +10,11 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
-import os, environ, cloudinary
+import os, environ, cloudinary, dj_database_url
 from pathlib import Path
 from datetime import timedelta
-import dj_database_url
+from rest_framework.settings import api_settings
+
 
 env = environ.Env()
 
@@ -32,8 +33,7 @@ SECRET_KEY = env('SECRET_KEY')
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = env('DEBUG', default=False)
 
-ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(' ')
-
+ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(' ')[:]
 
 # Application definition
 
@@ -44,7 +44,12 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    # Vendors
+    'rest_framework',
+    'knox',
     'cloudinary',
+    # Apps
+    'apps.user',
 ]
 
 MIDDLEWARE = [
@@ -80,8 +85,15 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
-
-DATABASES = {'default': dj_database_url.parse(env('DATABASE_URL'))}
+if DEBUG:
+    DATABASES = {
+        "default": {
+            "ENGINE": "django.db.backends.sqlite3",
+            "NAME": "db.sqlite3",
+        }
+    }
+else:
+    DATABASES = {'default': dj_database_url.parse(env('DATABASE_URL'))}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
@@ -133,9 +145,9 @@ if not DEBUG:
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-AUTH_USER_MODEL = 'user.CustomUser'
+AUTH_USER_MODEL = 'user.Profile'
 
-LOGIN_URL = '/accounts/login/'
+LOGIN_URL = '/api/auth/login/'
 LOGIN_REDIRECT_URL = ''
 
 if DEBUG:
@@ -147,8 +159,44 @@ else:
     EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD')
     EMAIL_PORT = 587
     EMAIL_USE_TLS = True
-    DEFAULT_FROM_EMAIL = 'Shapetheam ' + env('EMAIL_ADDRESS')
+    DEFAULT_FROM_EMAIL = 'Comunitu ' + env('EMAIL_ADDRESS')
     ACCOUNT_EMAIL_SUBJECT_PREFIX = ''
 
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
+
+# Djnango Rest Framework
+REST_FRAMEWORK = {
+    # Use Django's standard `django.contrib.auth` permissions,
+    # or allow read-only access for unauthenticated users.
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
+    ],
+    'DEFAULT_AUTHENTICATION_CLASSES': ('knox.auth.TokenAuthentication',),
+}
+
+# Cloudnary
+cloudinary.config(
+    cloud_name=env('CLOUD_NAME'),
+    api_key=env('API_KEY'),
+    api_secret=env('API_SECRET'),
+    secure=env('SECURE')
+)
+
+
+# Knox
+KNOX_TOKEN_MODEL = 'knox.AuthToken'
+
+REST_KNOX = {
+  'SECURE_HASH_ALGORITHM': 'hashlib.sha512',
+  'AUTH_TOKEN_CHARACTER_LENGTH': 64,
+  'TOKEN_TTL': timedelta(hours=10),
+  'USER_SERIALIZER': 'knox.serializers.UserSerializer',
+  'TOKEN_LIMIT_PER_USER': None,
+  'AUTO_REFRESH': False,
+  'AUTO_REFRESH_MAX_TTL': None,
+  'MIN_REFRESH_INTERVAL': 60,
+  'AUTH_HEADER_PREFIX': 'Token',
+  'EXPIRY_DATETIME_FORMAT': api_settings.DATETIME_FORMAT,
+  'TOKEN_MODEL': 'knox.AuthToken',
+}
