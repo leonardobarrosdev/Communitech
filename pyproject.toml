@@ -9,8 +9,19 @@ dependencies = [
     "dj-database-url>=3.0.0",
     "django>=5.2.3",
     "django-environ>=0.12.0",
-    "django-htmx>=1.23.0",
+    "django-filter>=25.1",
+    "django-rest-knox>=5.0.2",
+    "djangorestframework>=3.16.0",
+    "markdown>=3.8",
     "pillow>=11.2.1",
     "psycopg2>=2.9.10",
     "whitenoise>=6.9.0",
+]
+
+[dependency-groups]
+dev = [
+    "flake8>=7.2.0",
+    "ipdb>=0.13.13",
+    "pytest>=8.4.0",
+    "pytest-django>=4.11.1",
 ]
