@@ -27,6 +27,16 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version-file: "pyproject.toml"
-        
+
+      - name: Install dependencies
+        run: uv sync --ci
+      - name: Run format
+        run: uv format --ci
+      - name: Run tests
+        run: uv test --ci
+      - name: Run lint
+        run: uv lint --ci
+      - name: Run build
+        run: uv build --ci
       - name: Minimize uv cache
         run: uv cache prune --ci
