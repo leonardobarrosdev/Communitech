@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     'cloudinary',
     # Apps
     'apps.user',
+    'apps.course'
 ]
 
 MIDDLEWARE = [
@@ -200,3 +201,7 @@ REST_KNOX = {
   'EXPIRY_DATETIME_FORMAT': api_settings.DATETIME_FORMAT,
   'TOKEN_MODEL': 'knox.AuthToken',
 }
+
+# Stripe
+STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
+STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET')
