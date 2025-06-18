@@ -72,11 +72,17 @@ class Profile(AbstractUser):
     """
     Custom User model that extends the default Django User model.
     """
-
+    ROLE_CHOICES = (
+        ("student", "Student"),
+        ("instructor", "Instructor"),
+        ("admin", "Admin")
+    )
     email = models.EmailField(_("email address"), unique=True)
     thumbnail = CloudinaryField(
         default="thumbnails/profile.png", validators=[file_validation]
     )
+    role = models.CharField(max_length=50, choices=ROLE_CHOICES, default="student")
+    updated_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["password"]
