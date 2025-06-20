@@ -15,6 +15,7 @@ dependencies = [
     "markdown>=3.8",
     "pillow>=11.2.1",
     "psycopg2>=2.9.10",
+    "stripe>=12.2.0",
     "whitenoise>=6.9.0",
 ]
 
@@ -26,3 +27,21 @@ dev = [
     "pytest>=8.4.0",
     "pytest-django>=4.11.1",
 ]
+
+[tool.black]
+exclude = '''
+(
+  /(
+      \.git
+    | \.hg
+    | \.mypy_cache
+    | \.tox
+    | \.venv
+    | _build
+    | buck-out
+    | build
+    | dist
+  )/
+  | migrations
+)
+'''

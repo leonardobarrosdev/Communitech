@@ -50,7 +50,8 @@ INSTALLED_APPS = [
     'cloudinary',
     # Apps
     'apps.user',
-    'apps.course'
+    'apps.course',
+    'apps.payment'
 ]
 
 MIDDLEWARE = [
@@ -184,7 +185,6 @@ cloudinary.config(
     secure=env('SECURE')
 )
 
-
 # Knox
 KNOX_TOKEN_MODEL = 'knox.AuthToken'
 
@@ -205,3 +205,5 @@ REST_KNOX = {
 # Stripe
 STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')
 STRIPE_WEBHOOK_SECRET = env('STRIPE_WEBHOOK_SECRET')
+FRONTEND_SUCCESS_URL = env('FRONTEND_SUCCESS_URL', default='http://localhost:3000/success')
+FRONTEND_CANCEL_URL = env('FRONTEND_CANCEL_URL', default='http://localhost:3000/cancel')
