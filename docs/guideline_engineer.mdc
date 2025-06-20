@@ -20,62 +20,110 @@ Este guia define os padrões e boas práticas a serem seguidos pela equipe de en
 
 ---
 
-### 2. 📏 Convenções de Código
+## 2. Padrão de Código
 
-#### Python/Django
+- **Estilo:** [PEP8](https://peps.python.org/pep-0008/)
+- **Linter:** `flake8`
+- **Formatter:** `black`
+- **Import Sorter:** `isort` (opcional)
 
-* Código formatado com **Black**
-* Imports organizados com **isort**
-* Linters: **flake8** ou **ruff**
-* Nomes de campos e métodos em **snake\_case**
-* Tabelas com nomes no plural (`courses`, `Profiles`, etc.)
-* Models com `Meta: ordering` e `__str__` implementado
-* UUIDField como padrão para chaves primárias
+### 2.1. Testes
 
----
-
-### 3. 🧪 Testes
-
-| Tipo                   | Ferramenta               | Cobertura mínima        |
-| ---------------------- | ------------------------ | ----------------------- |
-| Unitários              | `pytest + pytest-django` | 80%                     |
-| Integração             | `pytest`                 | Rotas, views principais |
-| E2E (quando aplicável) | Cypress (futuro)         | Fluxo de cursos e login |
-
-* Criar testes para **cada model, serializer e view**
-* Testes de integração para progresso do aluno e fluxo de publicação de curso
+- Framework: `pytest` + `pytest-django`
+- Estrutura de testes espelhando os apps
+- Testes obrigatórios para modelos, views, permissões e integrações críticas
 
 ---
 
-### 4. 🧵 Git / Versionamento
+## 3. Convenções de Projeto
 
-* **Convencional Commits** (`feat:`, `fix:`, `chore:` etc.)
-* Nome de branches:
+### 3.1. Models
 
-  * `feature/courses-create`
-  * `bugfix/auth-redirect`
-  * `release/v0.1.0`
-* Pull Requests com:
+- Usar `AbstractBaseModel` com campos padrão: `created_at`, `updated_at`
+- Sempre usar `UUID` como `id` quando aplicável
+- Criar modelos separados por domínio (ex: `Course`, `Lesson`, `Space`, `Event`, etc.)
 
-  * Descrição do problema
-  * Mudanças aplicadas
-  * Checklist de testes feitos
+### 3.2. Serializers
 
----
+- Nomear como `<ModelName>Serializer`, `<ModelName>DetailSerializer`, etc.
+- Validar regras de negócio no `validate_<field>`
 
-### 5. 📚 Documentação e Comunicação
+### 3.3. Views e Routers
 
-* Toda nova feature deve incluir:
-
-  * Docstring nos métodos públicos
-  * Esboço de uso (como criar curso, como funciona progress tracking)
-* Issues no GitHub/GitLab com label por tipo: `bug`, `feature`, `refactor`
+- Usar `ViewSet` sempre que possível
+- Manter urls organizadas por namespace (`/api/courses/`, `/api/events/`, etc.)
+- Permissões declaradas explicitamente
 
 ---
 
-### 6. 💡 Performance e Escalabilidade
+## 4. Boas Práticas
 
-* **Querysets otimizados** com `select_related`, `prefetch_related`
-* Paginação em listagens grandes (cursos, alunos)
-* Armazenamento de arquivos em Cloudinary via link, nunca local
-* Middleware leve, cache configurado via Redis (futuro)
+- Toda nova funcionalidade deve ter:
+  - Migration
+  - Testes
+  - Serializers
+  - Permissões claras
+  - Documentação da rota via DRF schema
+
+- Evitar lógica de negócio nas views – usar services/helpers
+
+---
+
+## 5. Versionamento e Branches
+
+- `main`: versão estável
+- `develop`: versão em desenvolvimento
+- Feature branches: `feature/<nome-da-feature>`
+- Hotfixes: `hotfix/<descricao>`
+
+---
+
+## 6. Commits e Pull Requests
+
+- Convention: [Conventional Commits](https://www.conventionalcommits.org)
+  
+Exemplos:
+
+feat(auth): implement login with Knox
+fix(payment): resolve stripe webhook signature issue
+refactor(user): improve model readability
+
+
+- Pull Requests devem incluir:
+  - Descrição do que foi feito
+  - Link para issue (se aplicável)
+  - Print de testes rodando (ou coverage)
+
+---
+
+## 7. Segurança
+
+- Nunca subir `.env` ou chaves no repo
+- Todos os dados sensíveis via variáveis de ambiente
+- Verificar permissões antes de retornar dados sensíveis
+
+---
+
+## 8. Ferramentas de Apoio
+
+- Debug: `ipdb`
+- Testes: `pytest`, `coverage`
+- Lint: `flake8`
+- Formatter: `black`
+- CI/CD (futuro): GitHub Actions
+
+---
+
+## 9. Repositório
+
+- README com instruções de setup local
+- Scripts `make` para facilitar comandos (`make run`, `make test`, `make migrate`)
+- Documentação da API com `/api/schema/` e `/api/docs/`
+
+---
+
+## 10. Padrão de Logs
+
+- Usar `logger = logging.getLogger(__name__)` nos arquivos
+- Nível padrão: `INFO`, usar `ERROR` em exceções
+- Logar erros de Stripe, autenticação, e webhooks críticos

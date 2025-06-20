@@ -1,59 +1,98 @@
-## ⚙️ **Documento de Decisões Técnicas (Technical Decisions Doc)**
+# Documento: Decisões Técnicas
+## Projeto: Comunitu – Plataforma de Comunidade e Aprendizagem Online (Clone Circle.so)
 
-Este documento descreve as escolhas arquiteturais e tecnológicas feitas no projeto, com justificativas, implicações e alternativas consideradas.
+### 1. Linguagem e Framework
 
----
-
-### 1. 🔧 **Stack de Tecnologia**
-
-| Camada         | Tecnologia                     | Justificativa                                                        |
-| -------------- | ------------------------------ | -------------------------------------------------------------------- |
-| Backend        | Django 5.1 + Python 3.12       | Framework robusto, produtivo e escalável com ORM maduro              |
-| Frontend       | HTMX + django-htmx             | Permite SPA-like UX sem overhead de JS frameworks                    |
-| Estilização    | Tailwind CSS + django-tailwind | Utilitário moderno e customizável, integração fluida com componentes |
-| UI Components  | Flowbite                       | Conjunto pronto e responsivo de componentes para Tailwind            |
-| Banco de Dados | PostgreSQL                     | Banco relacional poderoso com suporte a JSON, escalável              |
-| Mídia          | Cloudinary                     | Armazenamento e entrega otimizada de arquivos e vídeos               |
-| Pagamento      | Stripe                         | Gateway robusto, internacional, ideal para SaaS                      |
+- **Linguagem:** Python 3.12+
+- **Framework Web:** Django 5.2 + Django REST Framework (DRF)
+- **Motivo da escolha:**
+  - DRF é altamente produtivo para construção de APIs RESTful.
+  - Django provê estrutura robusta para autenticação, permissões, ORM, administração e extensibilidade.
+  - Comunidade madura e bom suporte para integrações como Stripe e Cloudinary.
 
 ---
 
-### 2. 📦 **Arquitetura de Aplicação**
+### 2. Autenticação
 
-| Elemento                     | Decisão                                                                       |
-| ---------------------------- | ----------------------------------------------------------------------------- |
-| Estrutura modular de apps    | Cada domínio (ex: `courses`, `users`, `payments`) será um app Django separado |
-| UUIDs como primary key       | Segurança e escalabilidade, evitando IDs preditivos                           |
-| Admin separado do front      | Interface administrativa Django desativada para o público                     |
-| HTMX para interatividade     | Ajax progressivo com baixa fricção e controle direto do servidor              |
-| Docker para ambiente         | Containers separados para `web`, `db`, `nginx`, `celery` no futuro            |
-| Assets compilados (Tailwind) | Uso de build automático via PostCSS dentro do Django Tailwind                 |
+- **Abordagem:** `AbstractUser` com autenticação via token (DRF Knox)
+- **Motivo da escolha:**
+  - Flexibilidade para personalizar o modelo de usuário desde o início.
+  - DRF Knox fornece tokens expiráveis, com maior segurança em APIs públicas.
 
 ---
 
-### 3. 🔐 **Segurança**
+### 3. Pagamentos
 
-| Área              | Decisão                                               |
-| ----------------- | ----------------------------------------------------- |
-| Autenticação      | Django `AbstractUser` customizado com papéis (`role`) |
-| Proteção de rotas | Decoradores + middleware baseado em grupo/perfil      |
-| Hash de senhas    | Padrão Django (`PBKDF2`)                              |
-| Rate limit/login  | Reforço via middleware futuro (ex: `django-axes`)     |
-| Uploads de mídia  | Apenas via Cloudinary com validação no backend        |
+- **Gateway:** Stripe
+- **Abordagem:** Checkout + Webhook para conceder/remover acesso a cursos e espaços
+- **Motivo da escolha:**
+  - Stripe oferece API confiável, suporte a múltiplas moedas e planos de assinatura.
+  - Possibilidade de expansão futura com billing, descontos, upsell, etc.
 
 ---
 
-### 4. ⚙️ **Alternativas Consideradas**
+### 4. Banco de Dados
 
-| Área             | Escolha Final | Alternativas      | Justificativa                                      |
-| ---------------- | ------------- | ----------------- | -------------------------------------------------- |
-| Frontend         | HTMX          | React, Vue        | Tempo de desenvolvimento reduzido, foco no backend |
-| Pagamento        | Stripe        | Paypal, PagSeguro | Melhor suporte técnico e documentação              |
-| Storage de mídia | Cloudinary    | AWS S3            | Setup mais simples, CDN embutido                   |
+- **Banco:** PostgreSQL
+- **Motivo da escolha:**
+  - Suporte nativo a JSON, pesquisas full-text, e ótima performance para estruturas relacionais complexas.
 
 ---
 
-### 5. 🌍 **Internacionalização**
+### 5. Armazenamento de Mídia
 
-* A aplicação será inicialmente em **português**.
-* Estrutura do projeto preparada para i18n com `gettext` para futuras traduções.
+- **Serviço:** Cloudinary
+- **Motivo da escolha:**
+  - Otimização automática de imagens e vídeos.
+  - Fácil integração com Django e entrega por CDN.
+
+---
+
+### 6. Deploy e Infraestrutura
+
+- **Empacotamento:** Docker + Docker Compose
+- **Servidor Web:** NGINX + Gunicorn
+- **Serviços em containers:**
+  - `api` (Django)
+  - `db` (PostgreSQL)
+  - `nginx` (reverse proxy)
+- **Motivo da escolha:**
+  - Docker garante ambiente replicável para desenvolvimento e produção.
+  - NGINX + Gunicorn é uma arquitetura padrão e robusta para aplicações Django.
+
+---
+
+### 7. Emails e Notificações
+
+- **Envio:** SMTP (definido por ambiente)
+- **Uso:** Notificações básicas (RSVP, alertas, anúncios)
+- **Motivo da escolha:**
+  - Simples, compatível com vários provedores (Sendgrid, Amazon SES, etc.)
+
+---
+
+### 8. Realtime / Live
+
+- **Mensagens diretas e chat:** Em fase posterior. Inicialmente via API REST com polling.
+- **Eventos ao vivo:** MVP utilizará integração com ferramentas externas (ex: Zoom ou Jitsi).
+- **Live Rooms/Stream:** Será avaliado para versão futura com WebRTC ou integração 3rd-party.
+
+---
+
+### 9. Alternativas Consideradas (e descartadas)
+
+| Alternativa          | Motivo de exclusão                     |
+|----------------------|----------------------------------------|
+| Firebase             | Não oferece controle granular de backend e DB relacional |
+| Supabase             | Ainda imaturo para certas integrações (Stripe, AI) |
+| Node.js + NestJS     | Boa estrutura, mas equipe com mais expertise em Django |
+| FastAPI              | Mais enxuto, mas DRF tem mais recursos prontos |
+| GraphQL              | Complexidade desnecessária no MVP |
+
+---
+
+### 10. Integrações Futura (Planejadas para fases seguintes)
+
+- Notificações WebSocket (Django Channels)
+- Busca avançada com ElasticSearch
+- Lógica de AI copiloto com OpenAI / Langchain

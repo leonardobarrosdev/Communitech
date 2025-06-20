@@ -1,108 +1,165 @@
-**📄 Documento de Requisitos do Produto (Product Requirements Document - PRD)**
-Este documento descreve os objetivos, funcionalidades, necessidades dos usuários, escopo e critérios de sucesso do produto.
+# Documento: Requisitos do Sistema
+
+## Projeto: Comunitu – Plataforma de Comunidade e Aprendizagem Online
 
 ---
 
-## 📄 **Documento de Requisitos do Produto – MVP: Plataforma de Cursos e Comunidade (Clone Circle.so)**
+## 1. Requisitos Funcionais
+
+### 1.1. Autenticação e Autorização
+
+* Registro e login de usuários com e-mail e senha.
+* Logout com expiração de token (via DRF Knox).
+* Middleware para proteger rotas autenticadas.
+* Controle de permissões por função (admin, moderador, membro).
+* Atribuição de acesso a espaços ou cursos com base em pagamento.
 
 ---
 
-### 1. 🧭 Visão Geral
+### 1.2. Gerenciamento de Comunidades
 
-O objetivo é desenvolver uma **plataforma web modular** com foco inicial em **cursos online**, similar ao Circle.so, com capacidade futura de expansão para comunidade, eventos ao vivo e monetização por meio de espaços pagos.
-
----
-
-### 2. 🎯 Objetivo do MVP
-
-Construir o **primeiro módulo funcional** da plataforma, com foco em:
-
-* Cadastro e autenticação de usuários
-* Estruturação e publicação de cursos (com seções, lições e mídia)
-* Progresso do aluno
-* Página pública de apresentação e planos
-* Integração com Stripe para preparar ambiente pago
+* Criação de comunidades com múltiplos espaços (Espaços Públicos, Privados e Secretos).
+* Organização por grupos de espaços.
+* Moderação de conteúdos (deleção de postagens).
+* Visualização de atividade dos membros (entradas, visualizações, posts).
 
 ---
 
-### 3. 👤 Personas
+### 1.3. Publicações e Comunicação
 
-| Persona       | Objetivo                                   |
-| ------------- | ------------------------------------------ |
-| **Instrutor** | Criar e organizar cursos com flexibilidade |
-| **Aluno**     | Acessar conteúdo e acompanhar progresso    |
-| **Visitante** | Conhecer a plataforma e se registrar       |
-
----
-
-### 4. 🔍 Requisitos Funcionais (Funcionalidades)
-
-#### 4.1 Cursos
-
-* Criar cursos com título, descrição, tipo, visibilidade
-* Criar seções e lições (drag-and-drop)
-* Suporte a tipos de conteúdo: vídeo, texto, PDF, embed
-* Visualização do curso (modo estudante)
-* Rastreio de progresso por lição
-* Lição marcada como concluída
-
-#### 4.2 Usuários
-
-* Registro e login via e-mail/senha
-* Perfis com papéis (aluno, instrutor)
-* Proteção de rotas (ex: dashboard, criar curso)
-
-#### 4.3 Página Pública e Planos
-
-* Página de apresentação institucional
-* Página de planos com preços e botões de ação
-* Link para Stripe (preparar fluxo futuro)
-
-#### 4.4 Integrações
-
-* Stripe (inicialmente configurado, usado na UI futuramente)
+* Editor de postagens com tinymce e plugin de IA.
+* Upload de imagens, vídeos e arquivos (via Cloudinary).
+* Comentários com threads de resposta.
+* Mensagens diretas e chat em grupo (inicialmente não em tempo real).
+* Indicação de status online/offline (versão futura).
 
 ---
 
-### 5. 🚫 Fora do Escopo (MVP)
+### 1.4. Cursos Online
 
-* Espaços de comunidade
-* Chat e mensagens diretas
-* Transmissões ao vivo
-* Notificações por e-mail
-* Workflows automatizados
-
----
-
-### 6. 📐 Critérios de Aceitação
-
-* Um instrutor consegue criar e publicar um curso com conteúdo organizado
-* Um aluno consegue assistir e marcar lições como concluídas
-* Progresso é salvo por usuário/curso
-* Visitante consegue visualizar a página de apresentação
-* Registro e login estão funcionais
-* Infraestrutura preparada para produção (Docker, Postgres, Cloudinary, Stripe)
+* Criação de cursos com seções e lições.
+* Tipos de curso: Autônomo, Estruturado e Agendado.
+* Suporte a vídeo, áudio, PDF, embed.
+* Interface drag-and-drop para organização de conteúdo (frontend).
+* Marcar lição como concluída.
 
 ---
 
-### 7. 📈 Métricas de Sucesso
+### 1.5. Eventos e Transmissões
 
-* Cursos criados por instrutores
-* Alunos com progresso ativo
-* Registro de novos usuários
-* Estabilidade e tempo de resposta médio
-
----
-
-### 8. 🗓️ Roadmap (MVP)
-
-| Fase | Módulo                 |
-| ---- | ---------------------- |
-| 1    | Cursos e Lição         |
-| 2    | Autenticação           |
-| 3    | Página de Apresentação |
-| 4    | Integração com Stripe  |
-| 5    | Infraestrutura/Deploy  |
+* Agendamento de eventos com RSVP.
+* Envio de lembrete por e-mail.
+* Suporte para link externo de transmissão (ex: Zoom).
+* Compartilhamento de tela (fase futura).
 
 ---
 
+### 1.6. Monetização
+
+* Integração com Stripe para pagamentos únicos e recorrentes.
+* Criação de espaços e cursos pagos.
+* Controle de acesso baseado em status de pagamento.
+* Criação de cupons e múltiplos planos.
+* Suporte a múltiplas moedas.
+
+---
+
+### 1.7. Customização
+
+* Upload de logo e banner da comunidade.
+* Definição de cores do tema.
+* Menus de navegação personalizados.
+* Suporte a domínio próprio.
+* Adicionar credenciais de acesso a "provedores de AI"
+
+---
+
+### 1.8. Comunicação e Notificações
+
+* Envio de notificações por e-mail (RSVP, alertas de curso, anúncios).
+* Digest semanal com resumo de atividades.
+* Notificações push (fase futura).
+
+---
+
+### 1.9. Landing Pages
+
+* Página básica de acesso ("lock screen") para espaços privados.
+* Estrutura com título, descrição, CTA.
+
+---
+
+### 1.10. Central de Ajuda
+
+* Inclusão de artigos ou links externos.
+* Fórum básico para suporte entre membros.
+
+---
+
+### 1.11. Automações
+
+* Workflows simples: executar ações com base em um evento.
+* Ex: ao completar curso, dar acesso a novo espaço.
+* Ações em massa: marcar membros, enviar mensagens.
+
+---
+
+### 1.12. Funcionalidades de IA (Básicas)
+
+* Na criação de aula: Criar tutorial baseado no vídeo, continuar ou melhorar escrita basedado em rascunho que foi feito no editor de texto tinymce.
+
+---
+
+## 2. Requisitos Não Funcionais
+
+### 2.1. Performance
+
+* Tempo de resposta médio da API: < 500ms
+* Capacidade para lidar com +10 mil membros ativos por comunidade (foco em escalabilidade futura)
+
+---
+
+### 2.2. Escalabilidade
+
+* Separação clara por módulos (apps Django).
+* Estrutura de banco relacional bem normalizada.
+* Cache reverso com NGINX (futuro uso de Redis).
+
+---
+
+### 2.3. Segurança
+
+* Criptografia de senha (bcrypt).
+* Criptografia de credenciais de acesso a API de AI.
+* Proteção contra CSRF, XSS, SQL Injection (via middlewares e práticas Django).
+* Validação e sanitização de input.
+* Webhooks protegidos com verificação de assinatura (Stripe).
+
+---
+
+### 2.4. Portabilidade
+
+* Ambientes de desenvolvimento replicáveis via Docker.
+* Separação clara entre config local e produção via `.env`.
+
+---
+
+### 2.5. Observabilidade
+
+* Logs centralizados (stdout + logger do Django).
+* Preparação futura para integração com Sentry ou LogRocket (frontend).
+* Monitoramento de uptime (Health check).
+
+---
+
+### 2.6. Manutenibilidade
+
+* Código documentado e testado com `pytest`.
+* Estrutura de projeto clara com apps modulares.
+* Uso de Black + Flake8 para padronização de estilo.
+
+---
+
+### 2.7. Internacionalização
+
+* Base preparada para tradução futura (i18n).

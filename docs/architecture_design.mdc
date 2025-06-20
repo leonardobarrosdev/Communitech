@@ -1,71 +1,162 @@
-## 🏗️ **Design e Arquitetura da Solução**
+Perfeito! Obrigado pelo esclarecimento. Vamos manter a **primeira versão do \*\*\*\*\*\*\*\*`architecture_design.mdc`**, que está alinhada com sua arquitetura backend-first e modular com Django + DRF, e apenas incluir uma seção **simples, clara e objetiva** sobre o uso de **IA com LangChain** – destacando que:
+
+* O uso da IA é voltado para **instrutores**.
+* O objetivo é **acelerar a produção de conteúdo**.
+* Cada instrutor deverá **fornecer suas próprias credenciais de API** (OpenAI, Gemini etc.).
+* A plataforma apenas orquestra via **LangChain**, sem custos adicionais para você.
 
 ---
 
-### 1. 📚 Arquitetura Geral
+## ✅ Aqui está a versão final de `architecture_design.mdc` com o acréscimo solicitado:
 
-A plataforma será construída sobre a arquitetura **modular do Django Rest Framewok**, com separação de apps por domínio e responsabilidades bem definidas.
+```md
+# Documento: Arquitetura do Sistema
+## Projeto: Comunitu – Plataforma de Comunidade e Aprendizagem Online
 
-#### Camadas da Aplicação:
+---
+
+## 1. Visão Geral da Arquitetura
+
+A aplicação será desenvolvida como uma **API REST modular** utilizando Django REST Framework. A arquitetura segue os princípios de:
+
+- Separação de responsabilidades (cada domínio em um app Django)
+- API-first (frontend desacoplado via React)
+- Extensibilidade para novas funcionalidades (AI, realtime, etc.)
+- Escalabilidade horizontal com Docker
+
+---
+
+## 2. Diagrama de Blocos (Lógico)
 
 ```
-urls (Endpoints) |
-Views + Templates (Controllers) |
-Serializer    |
-Application Services (Use Cases) |
-Models (Domain / ORM) |
-Infra (DB, Storage, Stripe, Cloudinary)
+
++---------------------------+
+\|   Frontend (React)       |
+\|  - Consome REST API      |
++-----------+--------------+
+|
+v
++-----------+--------------+
+\| Django REST API (DRF)    |
+\| Apps:                    |
+\| - users                  |
+\| - courses                |
+\| - community              |
+\| - messaging              |
+\| - events                 |
+\| - payments               |
+\| - core (utils)           |
++-----------+--------------+
+|
+v
++-----------+--------------+
+\| PostgreSQL (Banco de Dados) |
++---------------------------+
+
++---------------------------+
+\| Stripe (3rd-party)        |
+\| Cloudinary (3rd-party)    |
+\| SMTP (e-mails)            |
++---------------------------+
+
 ```
 
 ---
 
-### 2. 🧱 Módulos da Aplicação
+## 3. Módulos Principais
 
-| App        | Responsabilidade Principal                                |
-| ---------- | --------------------------------------------------------- |
-| `users`    | Registro, login, perfis, papéis (`student`, `instructor`) |
-| `courses`  | Cursos, seções, lições, tipos de conteúdo, progresso      |
-| `payments` | Lógica de checkout, planos, assinatura, integração Stripe |
-| `core`     | Landing page, menus, configuração geral da plataforma     |
-| `shared`   | Módulos comuns: mixins, utils, form helpers, etc.         |
+### 3.1. `users`
+- Registro, login, logout (Knox)
+- Model customizado com `AbstractUser`
+- Perfil do usuário e permissões
 
----
+### 3.2. `community`
+- Espaços, grupos de espaços e membros
+- Permissões por tipo de espaço (público, privado, secreto)
+- Posts, comentários, moderação
 
-### 3. 📦 Comunicação entre Camadas
+### 3.3. `courses`
+- Curso, seção, lição, progresso
+- Upload e organização de conteúdos (vídeo, PDF, mebedding, etc.)
+- Controle de acesso (liberação após pagamento)
+- Marcar como concluído
 
-* Os módulos se comunicam **via import direto** entre apps (`from apps.users.models import Profile`), mantendo dependências unidirecionais.
-* Views devem ser **finas**: orquestram apenas o fluxo e delegam lógica para services no domínio (`services.py`, `managers.py`).
-* Processos longos ou agendados (futuro): **tasks com Celery**.
+### 3.4. `events`
+- Agendamento de eventos
+- RSVP e lembretes por e-mail
+- Integração futura com live streaming (Jitsi, Zoom)
 
----
+### 3.5. `messaging`
+- Mensagens diretas e grupo (fase inicial via API REST)
+- Threads e replies
+- Indicação de atividade (status online)
 
-### 4. 🔁 Componentes Externos
+### 3.6. `payments`
+- Integração com Stripe
+- Webhooks para conceder/revogar acesso
+- Criação de produtos, planos, cupons
+- Registro de assinaturas
 
-| Serviço        | Integração                   | Descrição                               |
-| -------------- | ---------------------------- | --------------------------------------- |
-| **Cloudinary** | REST API via SDK             | Upload e entrega de imagens e vídeos    |
-| **Stripe**     | REST API via `stripe-python` | Checkout e Webhooks                     |
-| **PostgreSQL** | Django ORM                   | Banco de dados relacional principal     |
-| **Knox**       | Knox via Views & AuthToken   | Autentificação com uso de tokens        |
-
----
-
-### 5. ⚙️ Infraestrutura
-
-| Ambiente        | Ferramenta                                  |
-| --------------- | ------------------------------------------- |
-| Desenvolvimento | uv +| Docker Compose (`api`, `db`, `nginx`) |
-| Produção        | VPS (NGINX + Gunicorn + Docker)             |
-| Deploy          | SSH + GitHub Actions                        |
-| Banco de Dados  | PostgreSQL                                  |
-| Logs            | stdout + arquivos rotacionados              |
-| Monitoramento   | UptimeRobot (básico, externo)               |
+### 3.7. `core`
+- BaseModel, mixins, helpers, serviços
+- Validações comuns, logger central
+- Utilitários de automação e permissões
 
 ---
 
-### 6. 📈 Escalabilidade e Performance
+## 4. Banco de Dados
 
-* Banco otimizado com **UUID PKs**, **índices em campos usados em filtros** (`profile_id`, `lesson_id`).
-* Lógica de acesso a curso controlada por roles e registros.
-* Uso futuro de **cache local ou Redis** para planos de preços e menu.
-* Uploads e mídia sempre fora do servidor (Cloudinary via URL/CDN).
+- Banco: PostgreSQL
+- Relacional, com uso de JSONFields para configurações flexíveis
+- Estratégia de normalização moderada (3NF)
+- Histórico de atividades e logs de auditoria (futuro)
+
+---
+
+## 5. IA com LangChain (Integração Simples)
+
+- A plataforma integrará **LangChain** para permitir que **instrutores** usem modelos de IA para:
+  - Gerar conteúdos de aula
+  - Criar descrições de cursos
+  - Sugerir tópicos
+  - Resumir materiais
+
+- Cada instrutor poderá cadastrar **suas próprias credenciais de API** (ex: OpenAI, Gemini, Grok).
+- A plataforma apenas **orquestra o uso via LangChain** e **não armazena conteúdo sensível** ou cobra taxas adicionais pelo uso dessas IAs.
+- As chamadas à IA são feitas diretamente usando as credenciais do usuário autenticado.
+- Controle de uso e segurança por token de autenticação.
+
+---
+
+## 6. Escalabilidade e Extensões Futuras
+
+- Separação de workers assíncronos com Celery (notificações, e-mails, IA)
+- Redis para cache e WebSocket
+- CDN para mídia (Cloudflare + Cloudinary)
+- ElasticSearch para busca futura
+
+---
+
+## 7. Segurança e Boas Práticas
+
+- Autenticação baseada em token
+- Proteção contra CSRF (frontend aplica tokens)
+- Verificação de webhook Stripe por assinatura
+- Armazenamento de senhas com hash (Django padrão)
+- Variáveis sensíveis fora do código
+
+---
+
+## 8. Observabilidade
+
+- Logs estruturados com uso de `logging`
+- Health-check endpoint `/api/health/`
+- Integração futura com Sentry e uptime monitor
+
+---
+
+## 9. Considerações Finais
+
+Essa arquitetura é modular, extensível e preparada para a evolução contínua. O uso de IA via LangChain é pensado para **empoderar criadores de conteúdo**, sem criar dependências diretas da plataforma com provedores de IA.
+
+```
