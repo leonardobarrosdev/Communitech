@@ -49,7 +49,7 @@ INSTALLED_APPS = [
     'knox',
     'cloudinary',
     # Apps
-    'apps.user',
+    'apps.profile',
     'apps.course',
     'apps.payment'
 ]
@@ -147,7 +147,7 @@ if not DEBUG:
 MEDIA_URL = 'media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-AUTH_USER_MODEL = 'user.Profile'
+AUTH_USER_MODEL = 'profile.Profile'
 
 LOGIN_URL = '/api/auth/login/'
 LOGIN_REDIRECT_URL = ''
