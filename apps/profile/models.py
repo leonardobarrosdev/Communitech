@@ -1,12 +1,12 @@
 import uuid
+from django.core.exceptions import ValidationError
 from django.core.files.uploadedfile import UploadedFile
-from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.contrib.auth.models import AbstractUser
-from django.utils.translation import gettext_lazy as _
+from django.db import models
 from django.utils import timezone
+from django.utils.translation import gettext_lazy as _
 from cloudinary.models import CloudinaryField
-from django.core.exceptions import ValidationError
 
 
 # For testing model validation
@@ -72,22 +72,38 @@ class Profile(AbstractUser):
     """
     Custom User model that extends the default Django User model.
     """
+
     ROLE_CHOICES = (
-        ("student", "Student"),
-        ("instructor", "Instructor"),
-        ("admin", "Admin")
+        ("member", _("Member")),
+        ("moderator", _("Moderator")),
+        ("admin", _("Admin")),
     )
+    LANGUAGE = (("en", _("English")), ("es", _("Spanish")), ("pt", _("Portuguese")))
     email = models.EmailField(_("email address"), unique=True)
     thumbnail = CloudinaryField(
         default="thumbnails/profile.png", validators=[file_validation]
     )
-    role = models.CharField(max_length=50, choices=ROLE_CHOICES, default="student")
+    role = models.CharField(max_length=50, choices=ROLE_CHOICES, default="member")
+    language = models.CharField(max_length=2, choices=LANGUAGE, default="en")
+    headline = models.CharField(max_length=50, blank=True, null=True)
+    bio = models.TextField(max_length=300, blank=True, null=True)
+    location = models.CharField(max_length=100, blank=True, null=True)
+    website = models.URLField(max_length=200, blank=True, null=True)
+    linkedin = models.URLField(max_length=200, blank=True, null=True)
+    member_send_messages = models.BooleanField(default=True)
+    show_profile = models.BooleanField(default=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = ["password"]
 
     objects = ProfileManager()
+
+    def update(self, **kwargs):
+        for attr, value in kwargs.items():
+            setattr(self, attr, value)
+        self.updated_at = timezone.now()
+        self.save()
 
     def save(self, *args, **kwargs):
         if not self.username:

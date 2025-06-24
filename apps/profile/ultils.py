@@ -1,5 +1,5 @@
-from django.core.mail import EmailMessage
 import threading
+from django.core.mail import EmailMessage
 from rest_framework.authentication import SessionAuthentication
 
 
