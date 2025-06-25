@@ -1,0 +1,96 @@
+# Use case from admin profile
+
+Features:
+- Each community can create multiple group spaces
+- Space Types: Posts, Events, Chat, Course, Members and Images.
+
+## Create space group
+Name: Space group name
+Custom URL slug (optional): "Ex.: member-area"
+### Permissions: Hide member count, Hide from non-space members, Only show joined spaces in the sidebar and Allow members to create spaces
+
+## Create a post space
+space name: You space name
+space group: Choice a space group
+acess: Open, Privete and Secret
+- Open: Anyone in my community can see and join this space.
+- Private: Invited members only.Non-members will see a locked page, which you can customize in space settings.
+- Secret: Invited members only.Non-members will not see this space.
+### New post notifications (checkbox section)
+Email: Members will receive an email when new posts are shared
+In-app: Members will see an in-app notification when new posts are shared.
+
+## Create an event space
+space name: You space name
+space group: Choice a space group
+acess: Open, Privete and Secret
+- Open: Anyone in my community can see and join this space.
+- Private: Invited members only.Non-members will see a locked page, which you can customize in space settings.
+- Secret: Invited members only.Non-members will not see this space.
+Auto-RSVP space members to new events (boolean)
+
+## Create a chat Space
+space name: You space name
+space group: Choice a space group
+acess: Open, Privete and Secret
+- Open: Anyone in my community can see and join this space.
+- Private: Invited members only.Non-members will see a locked page, which you can customize in space settings.
+- Secret: Invited members only.Non-members will not see this space.
+### New message notifications
+All Messages:Members will receive push notification for all messages
+Mentions: Members will receive in-app and push notifications for @mentions only
+Off: Members won’t receive any notifications
+
+## Choose course type
+Self-paced: Course starts when a member enrolls. All content is available immediately.
+Structured: Course starts when a member enrolls. Sections are dripped relative to their enrollment date.
+Scheduled: Course starts on a specific date. Sections are dripped relative to that date.
+- Course access: The space will be created in draft mode and will not be visible to your members. You can update access settings after you create the space.
+
+## Create a member space
+space name: You space name
+space group: Choice a space group
+acess: Open, Privete and Secret
+- Open: Anyone in my community can see and join this space.
+- Private: Invited members only.Non-members will see a locked page, which you can customize in space settings.
+- Secret: Invited members only.Non-members will not see this space.
+
+## Create an image space
+space name: You space name
+space group: Choice a space group
+acess: Open, Privete and Secret
+- Open: Anyone in my community can see and join this space.
+- Private: Invited members only.Non-members will see a locked page, which you can customize in space settings.
+- Secret: Invited members only.Non-members will not see this space.
+### New post notifications (checkbox section)
+Email: Members will receive an email when new posts are shared
+In-app: Members will see an in-app notification when new posts are shared.
+
+
+Create content in Space Types:
+- Create post: Title, Content, Max 5 topics
+- Create event:
+    Title, Choice space,
+    Host (Preview admin full name),
+    topics, Date & time (GMT-3),
+    repeats ["Doesn't repeat", "daily", "every weekday (monthday to friday)", "every monday", "Bi-weekly on monday", "monthly on the 4th monday", "monthly on the 23rd", "annually on june 23"],
+    Location: ["In person", "URL YouTube Live (url, Hide location from non-attendees)"],
+    registration ["free event", "paid event"]
+- Course:
+    lessions:
+        General: status (draft or published), settings (Enable comments, Set a passing grade "boolean and 70%", Enforce passing grade to proceed, Hide answers on result page), Default tab (Comments or Curriculum);
+        Section: lession or quiz (Quiz: Single or mutiple answer, image, question, response (option1, option2, ...));
+    Customize: "update of course";
+    Paywalls "connect with stripe": Countri, "redirect for https://connect.stripe.com/setup/s/acct_...";
+    Lock Screen: Banner, description, lessons, paywalls and call to action;
+    Members: Download CSV and "add to waitlist"
+    Options: Lesson order enforcement (boolean), Notify course admins about new lesson comments (boolean), Hide member count (boolean), SEO (Custom URL slug. Meta title, Meta description, Open Graph title, Open Graph description, Open Graph image)
+    Workflow:
+        Create a custom workflow
+        Duplicate members over from one space to another (Bulk action)
+        Send a message to members when they join a space (Automation)
+        Tag members when they join a space (Automation)
+        Add members to a space when a specific member tag gets assigned to them (Automation)
+        Remove members from a space when a member tag gets removed (Automation)
+        Assign member tag when a member comments on a post (Automation)
+        Bulk add a filtered set of members to a space (Bulk action)
