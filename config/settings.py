@@ -51,7 +51,9 @@ INSTALLED_APPS = [
     # Apps
     'apps.profile',
     'apps.course',
-    'apps.payment'
+    'apps.payment',
+    'apps.community',
+    'apps.notification'
 ]
 
 MIDDLEWARE = [
