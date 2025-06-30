@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from apps.community.models import Space, Post, Comment
+from apps.community.models import Space, Post, Comment, Group
 
 
 class SpaceSerializer(serializers.ModelSerializer):
@@ -19,3 +19,9 @@ class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
         fields = ['id', 'post', 'parent', 'content', 'created_at']
+
+
+class GroupSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = "__all__"
