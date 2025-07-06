@@ -1,5 +1,15 @@
 from rest_framework import serializers
-from apps.community.models import Space, Post, Comment, Group
+from apps.community.models import (
+    Community, Space, Post, Comment, Group
+)
+
+
+class CommunitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Community
+        fields = '__all__'
+        read_only_fields = ['created_at']
+        extra_kwargs = {"slug": {"required": False}}
 
 
 class SpaceSerializer(serializers.ModelSerializer):
@@ -12,13 +22,15 @@ class SpaceSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     class Meta:
         model = Post
-        fields = ['id', 'title', 'content', 'space', 'created_at']
+        fields = '__all__'
+        read_only_fields = ['created_at']
 
 
 class CommentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'parent', 'content', 'created_at']
+        fields = '__all__'
+        read_only_fields = ['created_at']
 
 
 class GroupSerializer(serializers.ModelSerializer):
