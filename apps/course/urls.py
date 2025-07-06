@@ -8,12 +8,12 @@ from apps.course.views import (
 
 urlpatterns = [
     path(
-        "courses/",
+        "",
         CourseViewSet.as_view({"get": "list", "post": "create"}),
         name="course-list",
     ),
     path(
-        "courses/<uuid:pk>/",
+        "<uuid:pk>/",
         CourseViewSet.as_view(
             {"get": "retrieve", "put": "update", "delete": "destroy"}
         ),
