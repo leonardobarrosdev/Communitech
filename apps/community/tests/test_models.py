@@ -7,7 +7,7 @@ User = get_user_model()
 
 @pytest.mark.django_db
 def test_create_community():
-    user = User.objects.create_user(username='owner', password='pass')
+    user = User.objects.create_user(email='owner@company.com', password='pass')
     community = models.Community.objects.create(
         name='Test Community',
         slug='test-community',
@@ -20,7 +20,7 @@ def test_create_community():
 
 @pytest.mark.django_db
 def test_group_belongs_to_community():
-    user = User.objects.create_user(username='owner', password='pass')
+    user = User.objects.create_user(email='owner@company.com', password='pass')
     community = models.Community.objects.create(
         name='Test Community',
         slug='test-community',
@@ -36,8 +36,8 @@ def test_group_belongs_to_community():
 
 @pytest.mark.django_db
 def test_space_creation_and_moderators():
-    user = User.objects.create_user(username='owner', password='pass')
-    mod = User.objects.create_user(username='mod', password='pass')
+    user = User.objects.create_user(email='owner@company.com', password='pass')
+    mod = User.objects.create_user(email='mod@company.com', password='pass')
     community = models.Community.objects.create(
         name='Test Community',
         slug='test-community',
@@ -61,8 +61,8 @@ def test_space_creation_and_moderators():
 
 @pytest.mark.django_db
 def test_membership_unique_constraint():
-    user = User.objects.create_user(username='member', password='pass')
-    owner = User.objects.create_user(username='owner', password='pass')
+    user = User.objects.create_user(email='member@company.com', password='pass')
+    owner = User.objects.create_user(email='owner@company.com', password='pass')
     community = models.Community.objects.create(
         name='Test Community',
         slug='test-community',
@@ -84,8 +84,8 @@ def test_membership_unique_constraint():
 
 @pytest.mark.django_db
 def test_post_and_comment_creation():
-    user = User.objects.create_user(username='poster', password='pass')
-    owner = User.objects.create_user(username='owner', password='pass')
+    user = User.objects.create_user(email='poster@company.com', password='pass')
+    owner = User.objects.create_user(email='owner@company.com', password='pass')
     community = models.Community.objects.create(
         name='Test Community',
         slug='test-community',
@@ -118,8 +118,8 @@ def test_post_and_comment_creation():
 
 @pytest.mark.django_db
 def test_comment_threading():
-    user = User.objects.create_user(username='poster', password='pass')
-    owner = User.objects.create_user(username='owner', password='pass')
+    user = User.objects.create_user(email='poster@company.com', password='pass')
+    owner = User.objects.create_user(email='owner@company.com', password='pass')
     community = models.Community.objects.create(
         name='Test Community',
         slug='test-community',
@@ -153,4 +153,6 @@ def test_comment_threading():
         parent=parent_comment
     )
     assert child_comment.parent == parent_comment
-    assert parent_comment.comments.count() == 1
+    assert models.Comment.objects.filter(
+        parent__id=parent_comment.id
+    ).count() == 1
