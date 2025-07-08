@@ -1,5 +1,5 @@
 import pytest
-import json, ipdb
+import json
 from unittest.mock import patch, Mock
 from django.urls import reverse
 from django.contrib.auth import get_user_model

@@ -32,17 +32,19 @@ class Group(models.Model):
 
 class Space(models.Model):
     VISIBILITY = (
-        ('public', 'Público'),
-        ('private', 'Privado'),
-        ('secret', 'Secreto'),
+        ("public", "Público"),
+        ("private", "Privado"),
+        ("secret", "Secreto"),
     )
     name = models.CharField(max_length=100)
     slug = models.SlugField(unique=True)
     description = models.TextField(blank=True)
     group = models.ForeignKey(Group, on_delete=models.SET_NULL, null=True)
     community = models.ForeignKey(Community, on_delete=models.CASCADE)
-    visibility = models.CharField(max_length=10, choices=VISIBILITY, default='public')
-    moderators = models.ManyToManyField(User, related_name='moderated_spaces', blank=True)
+    visibility = models.CharField(max_length=10, choices=VISIBILITY, default="public")
+    moderators = models.ManyToManyField(
+        User, related_name="moderated_spaces", blank=True
+    )
     created_at = models.DateTimeField(auto_now_add=True)
 
 
@@ -52,7 +54,7 @@ class Membership(models.Model):
     joined_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'space')
+        unique_together = ("user", "space")
 
 
 class Post(models.Model):
@@ -65,8 +67,8 @@ class Post(models.Model):
 
 
 class Comment(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name='comments')
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="comments")
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    parent = models.ForeignKey('self', null=True, blank=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey("self", null=True, blank=True, on_delete=models.CASCADE)
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)

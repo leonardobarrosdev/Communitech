@@ -14,8 +14,9 @@ def get_user():
         email=f"{generate_name}@example.com",
         password="StrongPass123!",
         first_name="Test",
-        last_name="User"
+        last_name="User",
     )
+
 
 @pytest.mark.django_db
 class TestCreateCommunityAPIView:
@@ -30,9 +31,9 @@ class TestCreateCommunityAPIView:
         self.data = {
             "owner": self.user.id,
             "name": "New Community",
-            "description": "Testing community"
+            "description": "Testing community",
         }
-    
+
     def test_create_community_success(self):
         response = self.api_client.post(path=self.url, data=self.data, format="json")
         assert response.status_code == status.HTTP_201_CREATED
@@ -49,7 +50,7 @@ class TestCreateCommunityAPIView:
         self.api_client.logout()
         response = self.api_client.post(path=self.url, data=self.data, format="json")
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
-    
+
 
 @pytest.mark.django_db
 class TestListCommunityAPIView:
@@ -64,8 +65,9 @@ class TestListCommunityAPIView:
         self.data = {
             "owner": self.user.id,
             "name": "New Community",
-            "description": "Testing community"
+            "description": "Testing community",
         }
+
     def test_list_community_success(self):
         self.api_client.post(path=self.url, data=self.data, format="json")
         data = self.data.copy()
@@ -73,7 +75,7 @@ class TestListCommunityAPIView:
         self.api_client.post(path=self.url, data=data, format="json")
         response = self.api_client.get(path=self.url, format="json")
         assert len(response.data) == 2
-    
+
     def test_list_community_0(self):
         response = self.api_client.get(path=self.url, format="json")
         assert len(response.data) == 0
@@ -92,19 +94,20 @@ class TestRetrieveCommunityAPIView:
         self.data = {
             "owner": self.user.id,
             "name": "New Community",
-            "description": "Testing community"
+            "description": "Testing community",
         }
+
     def test_retrieve_community_success(self):
         info = self.api_client.post(path=self.url, data=self.data, format="json")
         url = reverse("community-details", kwargs={"pk": info.data["id"]})
         response = self.api_client.get(path=url, format="json")
         assert response.data["id"] == info.data["id"]
-    
+
     def test_retrieve_community_failed(self):
         url = reverse("community-details", kwargs={"pk": 2})
         response = self.api_client.get(path=url, format="json")
         assert response.status_code == status.HTTP_404_NOT_FOUND
-    
+
 
 @pytest.mark.django_db
 class TestUpdateCommunityAPIView:
@@ -119,19 +122,17 @@ class TestUpdateCommunityAPIView:
         self.data = {
             "owner": self.user.id,
             "name": "New Community",
-            "description": "Testing community"
+            "description": "Testing community",
         }
 
     def test_update_community_success(self):
         info = self.api_client.post(path=self.url, data=self.data, format="json")
         url = reverse("community-update", kwargs={"pk": info.data["id"]})
-        data = {
-            "name": "Your ".join(self.data["name"].split()[0:])
-        }
+        data = {"name": "Your ".join(self.data["name"].split()[0:])}
         response = self.api_client.put(path=url, data=data, format="json")
         assert response.status_code == status.HTTP_200_OK
         assert response.data["name"] == data["name"]
-    
+
     def test_update_community_failed(self):
         info = self.api_client.post(path=self.url, data=self.data, format="json")
         url = reverse("community-update", kwargs={"pk": info.data["id"]})
@@ -153,7 +154,7 @@ class TestDeleteCommunityAPIView:
         self.data = {
             "owner": self.user.id,
             "name": "New Community",
-            "description": "Testing community"
+            "description": "Testing community",
         }
 
     def test_delete_community_success(self):
@@ -161,7 +162,7 @@ class TestDeleteCommunityAPIView:
         url = reverse("community-details", kwargs={"pk": info.data["id"]})
         response = self.api_client.delete(path=url, format="json")
         assert response.status_code == status.HTTP_204_NO_CONTENT
-    
+
     def test_delete_community_failed(self):
         url = reverse("community-details", kwargs={"pk": 999999})
         response = self.api_client.delete(path=url)

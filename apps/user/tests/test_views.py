@@ -57,9 +57,7 @@ class TestRegisterAPIView:
 class TestUpdateProfileAPIView:
     def setup_method(self):
         self.profile = Profile.objects.create_user(
-            first_name="Test",
-            email="test@company.com",
-            password="StringPass123"
+            first_name="Test", email="test@company.com", password="StringPass123"
         )
         self.api_client = APIClient()
         _, token = AuthToken.objects.create(self.profile)
@@ -85,9 +83,7 @@ class TestUpdateProfileAPIView:
 class TestUpdateAuthAPIView:
     def setup_method(self):
         self.profile = Profile.objects.create_user(
-            first_name="Test",
-            email="test@company.com",
-            password="StringPass123"
+            first_name="Test", email="test@company.com", password="StringPass123"
         )
         self.api_client = APIClient()
         _, token = AuthToken.objects.create(self.profile)
@@ -100,7 +96,7 @@ class TestUpdateAuthAPIView:
         assert response.status_code == status.HTTP_200_OK
         self.profile.refresh_from_db()
         assert self.profile.email == "contact@company.com"
-    
+
     def test_update_auth_unauthenticated(self):
         self.api_client.logout()
         response = self.api_client.patch(self.url, self.data, format="json")

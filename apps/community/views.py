@@ -2,13 +2,11 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from knox.auth import TokenAuthentication
-from apps.community.models import (
-    Community, Space
-)
+from apps.community.models import Community, Space
 from apps.community.serializers import (
     CommunitySerializer,
     CommunityUpdateSerializer,
-    SpaceSerializer
+    SpaceSerializer,
 )
 
 
@@ -35,7 +33,5 @@ class SpaceViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
         return Space.objects.filter(
-            Q(visibility='public') |
-            Q(membership__user=user) |
-            Q(moderators=user)
+            Q(visibility="public") | Q(membership__user=user) | Q(moderators=user)
         ).distinct()
