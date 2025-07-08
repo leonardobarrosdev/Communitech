@@ -43,3 +43,10 @@ class GroupSerializer(serializers.ModelSerializer):
     class Meta:
         model = Group
         fields = "__all__"
+
+
+class GroupDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Group
+        fields = "__all__"
+        extra_kwargs = {"community": {"required": False}}
