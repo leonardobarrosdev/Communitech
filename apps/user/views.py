@@ -2,14 +2,19 @@ from rest_framework import status
 from rest_framework.generics import CreateAPIView, UpdateAPIView
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
+from knox.views import LoginView as KnoxLoginView
 from knox.auth import TokenAuthentication
 from knox.models import AuthToken
-
+from django.contrib.auth import login
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 from apps.user.serializers import ProfileSerializer, RegisterSerializer
 from apps.user.ultils import Util, CsrfExemptSessionAuthentication
-from apps.user.serializers import UpdateProfileSerializer, UpdateAuthSerializer
+from apps.user.serializers import (
+    AuthTokenSerializer,
+    UpdateProfileSerializer,
+    UpdateAuthSerializer
+)
 from apps.user.models import Profile
 
 
@@ -45,6 +50,22 @@ class RegisterAPIView(CreateAPIView):
             },
             status=status.HTTP_201_CREATED,
         )
+
+
+class LoginView(KnoxLoginView):
+    permission_classes = (AllowAny,)
+
+    def post(self, request, format=None):
+        import ipdb
+        serializer = AuthTokenSerializer(data=request.data)
+        ipdb.set_trace()
+        serializer.is_valid(raise_exception=True)
+        user = serializer.validated_data['user']
+        login(request, user)
+        response = super(LoginView, self).post(request, format=None)
+        user_serializer = ProfileSerializer(user)
+        response.data['user'] = user_serializer.data
+        return response
 
 
 class UpdateProfileAPIView(UpdateAPIView):
