@@ -4,6 +4,7 @@ from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
 from apps.user.models import Profile
+from config import settings
 
 
 @pytest.fixture
@@ -51,6 +52,47 @@ class TestRegisterAPIView:
         }
         response = api_client.post(url, data, format="json")
         assert response.status_code == status.HTTP_400_BAD_REQUEST
+
+
+@pytest.mark.django_db
+class TestLoginView:
+    api_client = APIClient()
+
+    def setup_method(self):
+        self.data = {"email": "test@company.com", "password": "Pass1234"}
+        self.user = Profile.objects.create(**self.data)
+        self.url = reverse("profile:login")
+    
+    def test_login_success(self):
+        response = self.api_client.post(
+            path=self.url, data=self.data, format="json"
+        )
+        assert response.status_code == status.HTTP_202_ACCEPTED
+        assert response.url == settings.LOGIN_REDIRECT_URL
+
+
+@pytest.mark.django_db
+class TestLogoutView:
+    api_client = APIClient()
+
+    def setup_method(self):
+        profile = Profile.objects.create_user(
+            first_name="Test",
+            email="test@company.com",
+            password="StringPass123"
+        )
+        _, token = AuthToken.objects.create(profile)
+        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
+        self.url = reverse("profile:logout")
+
+    def test_logout_success(self):
+        response = self.api_client.get(path=self.url, format="json")
+        assert response.status_code == status.HTTP_200_OK
+    
+    def test_logout_failed(self):
+        self.api_client.logout()
+        response = self.api_client.get(path=self.url, format="json")
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.django_db

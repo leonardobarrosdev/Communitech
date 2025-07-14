@@ -6,9 +6,9 @@ from rest_framework.validators import UniqueValidator
 from apps.user.models import Profile
 
 
-class AuthTokenSerializer(serializers.ModelSerializer):
+class AuthTokenSerializer(serializers.Serializer):
     email = serializers.CharField(
-        label=_("email"), write_only=True
+        label=_("Email"), write_only=True
     )
     password = serializers.CharField(
         label=_("Password"),

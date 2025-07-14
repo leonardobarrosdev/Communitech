@@ -1,15 +1,14 @@
-from rest_framework import status
-from rest_framework.generics import CreateAPIView, UpdateAPIView
+from rest_framework import status, generics
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
-from knox.views import LoginView as KnoxLoginView
+# from rest_framework.authtoken.serializers import AuthTokenSerializer
 from knox.auth import TokenAuthentication
 from knox.models import AuthToken
 from django.contrib.auth import login
 from django.template.loader import render_to_string
 from django.utils.translation import gettext as _
 from apps.user.serializers import ProfileSerializer, RegisterSerializer
-from apps.user.ultils import Util, CsrfExemptSessionAuthentication
+from apps.user.utils import Util, CsrfExemptSessionAuthentication
 from apps.user.serializers import (
     AuthTokenSerializer,
     UpdateProfileSerializer,
@@ -18,7 +17,7 @@ from apps.user.serializers import (
 from apps.user.models import Profile
 
 
-class RegisterAPIView(CreateAPIView):
+class RegisterAPIView(generics.CreateAPIView):
     authentication_classes = [CsrfExemptSessionAuthentication]
     queryset = Profile.objects.all()
     serializer_class = RegisterSerializer
@@ -52,23 +51,23 @@ class RegisterAPIView(CreateAPIView):
         )
 
 
-class LoginView(KnoxLoginView):
+class LoginView(generics.GenericAPIView):
+    authentication_classes = [CsrfExemptSessionAuthentication]
+    serializer_class = AuthTokenSerializer
     permission_classes = (AllowAny,)
 
     def post(self, request, format=None):
-        import ipdb
-        serializer = AuthTokenSerializer(data=request.data)
-        ipdb.set_trace()
+        serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-        user = serializer.validated_data['user']
-        login(request, user)
+        profile = serializer.validated_data['user']
+        login(request, profile)
         response = super(LoginView, self).post(request, format=None)
-        user_serializer = ProfileSerializer(user)
-        response.data['user'] = user_serializer.data
+        profile_serialized = ProfileSerializer(profile)
+        response.data['user'] = profile_serialized.data
         return response
 
 
-class UpdateProfileAPIView(UpdateAPIView):
+class UpdateProfileAPIView(generics.UpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = UpdateProfileSerializer
     authentication_classes = (TokenAuthentication,)
@@ -88,7 +87,7 @@ class UpdateProfileAPIView(UpdateAPIView):
             return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
 
 
-class UpdateAuthAPIView(UpdateAPIView):
+class UpdateAuthAPIView(generics.UpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = UpdateAuthSerializer
     authentication_classes = (TokenAuthentication,)
