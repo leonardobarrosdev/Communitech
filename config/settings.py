@@ -169,6 +169,11 @@ else:
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 
+AUTHENTICATION_BACKENDS = [
+    'apps.user.backends.EmailBackend',
+    'django.contrib.auth.backends.ModelBackend',
+]
+
 # Djnango Rest Framework
 REST_FRAMEWORK = {
     # Use Django's standard `django.contrib.auth` permissions,
