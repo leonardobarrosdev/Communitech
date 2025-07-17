@@ -69,8 +69,9 @@ class ProfileManager(BaseUserManager):
 
 class Profile(AbstractUser):
     """
-    Custom User model that extends the default Django User model.
+    Profile model that extends the default Django User model.
     """
+
     ROLE_CHOICES = (
         ("member", _("Member")),
         ("moderator", _("Moderator")),

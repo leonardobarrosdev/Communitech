@@ -1,10 +1,10 @@
-from django.urls import path, include, re_path
-from knox.views import LogoutView
+from django.urls import path
 from .views import (
     RegisterAPIView,
     LoginView,
+    LogoutView,
     UpdateProfileAPIView,
-    UpdateAuthAPIView
+    UpdateAuthAPIView,
 )
 
 
@@ -20,5 +20,4 @@ urlpatterns = [
         UpdateAuthAPIView.as_view(),
         name="update-auth",
     ),
-    re_path(r"auth/", include("knox.urls")),
 ]

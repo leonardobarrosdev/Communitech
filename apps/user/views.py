@@ -12,7 +12,7 @@ from apps.user.serializers import (
     RegisterSerializer,
     LoginSerializer,
     UpdateProfileSerializer,
-    UpdateAuthSerializer
+    UpdateAuthSerializer,
 )
 from apps.user.models import Profile
 
@@ -55,21 +55,22 @@ class LoginView(ObtainAuthToken):
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(
-            data=request.data,
-            context={'request': request}
+            data=request.data, context={"request": request}
         )
         serializer.is_valid(raise_exception=True)
-        profile = serializer.validated_data['user']
+        profile = serializer.validated_data["user"]
         token, created = Token.objects.get_or_create(user=profile)
-        return Response({
-            'token': token.key,
-            'user': {
-                'id': profile.pk,
-                'first_name': profile.first_name,
-                'username': profile.username,
-                'email': profile.email
+        return Response(
+            {
+                "token": token.key,
+                "user": {
+                    "id": profile.pk,
+                    "first_name": profile.first_name,
+                    "username": profile.username,
+                    "email": profile.email,
+                },
             }
-        })
+        )
 
 
 class LogoutView(views.APIView):
