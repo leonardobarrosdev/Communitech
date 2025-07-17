@@ -1,7 +1,7 @@
 from rest_framework import viewsets
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
-from knox.auth import TokenAuthentication
 from apps.community.models import Community, Group, Space
 from apps.community.serializers import (
     CommunitySerializer,
