@@ -1,6 +1,4 @@
 from rest_framework import viewsets
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
 from apps.community.models import Community, Group, Space
 from apps.community.serializers import (
@@ -15,36 +13,28 @@ from apps.community.serializers import (
 class CommunityViewSet(viewsets.ModelViewSet):
     queryset = Community.objects.all()
     serializer_class = CommunitySerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
 
 class CommunityUpdateView(viewsets.ModelViewSet):
     queryset = Community.objects.all()
     serializer_class = CommunityUpdateSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    pagination_class = None
 
 
 class GroupDetailViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupDetailSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
 
 class SpaceViewSet(viewsets.ModelViewSet):
     queryset = Space.objects.all()
     serializer_class = SpaceSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = [IsAuthenticated]
+    pagination_class = None
 
     def get_queryset(self):
         user = self.request.user
