@@ -1,4 +1,4 @@
-from rest_framework import status, generics
+from rest_framework import status, generics, views
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.authtoken.models import Token
@@ -10,7 +10,7 @@ from apps.user.utils import Util
 from apps.user.serializers import (
     ProfileSerializer,
     RegisterSerializer,
-    AuthTokenSerializer,
+    LoginSerializer,
     UpdateProfileSerializer,
     UpdateAuthSerializer
 )
@@ -51,7 +51,7 @@ class RegisterAPIView(generics.CreateAPIView):
 
 
 class LoginView(ObtainAuthToken):
-    serializer_class = AuthTokenSerializer
+    serializer_class = LoginSerializer
 
     def post(self, request, *args, **kwargs):
         serializer = self.serializer_class(
@@ -70,6 +70,14 @@ class LoginView(ObtainAuthToken):
                 'email': profile.email
             }
         })
+
+
+class LogoutView(views.APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        request.user.auth_token.delete()
+        return Response({"message": "Logged out successfully"}, status=200)
 
 
 class UpdateProfileAPIView(generics.UpdateAPIView):
