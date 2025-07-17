@@ -1,5 +1,5 @@
 import pytest
-from knox.models import AuthToken
+from rest_framework.authtoken.models import Token
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -59,16 +59,21 @@ class TestLoginView:
     api_client = APIClient()
 
     def setup_method(self):
-        self.data = {"email": "test@company.com", "password": "Pass1234"}
-        self.user = Profile.objects.create(**self.data)
+        self.data = {
+            "username": "testUser",
+            "email": "test@company.com",
+            "password": "Pass1234"
+        }
+        self.user = Profile.objects.create_user(**self.data)
         self.url = reverse("profile:login")
+        del self.data["username"]
     
     def test_login_success(self):
         response = self.api_client.post(
             path=self.url, data=self.data, format="json"
         )
-        assert response.status_code == status.HTTP_202_ACCEPTED
-        assert response.url == settings.LOGIN_REDIRECT_URL
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["user"]["email"] == self.data["email"]
 
 
 @pytest.mark.django_db
@@ -81,7 +86,7 @@ class TestLogoutView:
             email="test@company.com",
             password="StringPass123"
         )
-        _, token = AuthToken.objects.create(profile)
+        _, token = Token.objects.create(profile)
         self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
         self.url = reverse("profile:logout")
 
@@ -102,7 +107,7 @@ class TestUpdateProfileAPIView:
             first_name="Test", email="test@company.com", password="StringPass123"
         )
         self.api_client = APIClient()
-        _, token = AuthToken.objects.create(self.profile)
+        _, token = Token.objects.create(self.profile)
         self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
         self.url = reverse("profile:update", kwargs={"id": self.profile.id})
         self.data = {"first_name": "Johny", "last_name": "Test"}
@@ -128,7 +133,7 @@ class TestUpdateAuthAPIView:
             first_name="Test", email="test@company.com", password="StringPass123"
         )
         self.api_client = APIClient()
-        _, token = AuthToken.objects.create(self.profile)
+        _, token = Token.objects.create(self.profile)
         self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
         self.url = reverse("profile:update-auth", kwargs={"id": self.profile.id})
         self.data = {"email": "contact@company.com"}
