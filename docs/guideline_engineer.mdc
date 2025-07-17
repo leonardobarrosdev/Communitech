@@ -84,7 +84,7 @@ Este guia define os padrões e boas práticas a serem seguidos pela equipe de en
   
 Exemplos:
 
-feat(auth): implement login with Knox
+feat(auth): implement login with DRF AuthToken
 fix(payment): resolve stripe webhook signature issue
 refactor(user): improve model readability
 

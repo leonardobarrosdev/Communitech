@@ -14,10 +14,10 @@
 
 ### 2. Autenticação
 
-- **Abordagem:** `AbstractUser` com autenticação via token (DRF Knox)
+- **Abordagem:** `AbstractUser` com autenticação via token (DRF)
 - **Motivo da escolha:**
   - Flexibilidade para personalizar o modelo de usuário desde o início.
-  - DRF Knox fornece tokens expiráveis, com maior segurança em APIs públicas.
+  - DRF AuthToken fornece token simples, com maior segurança em APIs públicas.
 
 ---
 

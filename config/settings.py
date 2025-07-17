@@ -12,8 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 import os, environ, cloudinary, dj_database_url
 from pathlib import Path
-from datetime import timedelta
-from rest_framework.settings import api_settings
 
 
 env = environ.Env()
@@ -36,7 +34,6 @@ DEBUG = env('DEBUG', default=False)
 ALLOWED_HOSTS = env('ALLOWED_HOSTS').split(' ')[:]
 
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -46,7 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     # Vendors
     'rest_framework',
-    'knox',
+    'rest_framework.authtoken',
     'cloudinary',
     # Apps
     'apps.user',
@@ -169,19 +166,11 @@ else:
 ACCOUNT_AUTHENTICATION_METHOD = 'email'
 ACCOUNT_EMAIL_REQUIRED = True
 
-AUTHENTICATION_BACKENDS = [
-    'apps.user.backends.EmailBackend',
-    'django.contrib.auth.backends.ModelBackend',
-]
-
-# Djnango Rest Framework
+# Django Rest Framework
 REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES': (
-        'knox.auth.TokenAuthentication'
-    ),
-    'DEFAULT_PERMISSION_CLASSES': (
-        'rest_framework.permissions.DjangoModelPermissionsOrAnonReadOnly'
-    )
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.TokenAuthentication'
+    ]
 }
 
 # Cloudnary
@@ -191,23 +180,6 @@ cloudinary.config(
     api_secret=env('API_SECRET'),
     secure=env('SECURE')
 )
-
-# Knox
-KNOX_TOKEN_MODEL = 'knox.AuthToken'
-
-REST_KNOX = {
-  'SECURE_HASH_ALGORITHM': 'hashlib.sha512',
-  'AUTH_TOKEN_CHARACTER_LENGTH': 64,
-  'TOKEN_TTL': timedelta(hours=10),
-  'USER_SERIALIZER': 'knox.serializers.UserSerializer',
-  'TOKEN_LIMIT_PER_USER': None,
-  'AUTO_REFRESH': False,
-  'AUTO_REFRESH_MAX_TTL': None,
-  'MIN_REFRESH_INTERVAL': 60,
-  'AUTH_HEADER_PREFIX': 'Token',
-  'EXPIRY_DATETIME_FORMAT': api_settings.DATETIME_FORMAT,
-  'TOKEN_MODEL': 'knox.AuthToken',
-}
 
 # Stripe
 STRIPE_SECRET_KEY = env('STRIPE_SECRET_KEY')

@@ -66,7 +66,7 @@ v
 ## 3. Módulos Principais
 
 ### 3.1. `users`
-- Registro, login, logout (Knox)
+- Registro, login, logout
 - Model customizado com `AbstractUser`
 - Perfil do usuário e permissões
 
