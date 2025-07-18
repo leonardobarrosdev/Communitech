@@ -1,5 +1,6 @@
 from rest_framework import viewsets
 from django.db.models import Q
+from config.paginations import ResultsSetPagination
 from apps.community.models import Community, Group, Space
 from apps.community.serializers import (
     CommunitySerializer,
@@ -13,28 +14,29 @@ from apps.community.serializers import (
 class CommunityViewSet(viewsets.ModelViewSet):
     queryset = Community.objects.all()
     serializer_class = CommunitySerializer
+    pagination_class = ResultsSetPagination
 
 
 class CommunityUpdateView(viewsets.ModelViewSet):
     queryset = Community.objects.all()
     serializer_class = CommunityUpdateSerializer
+    pagination_class = ResultsSetPagination
 
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    pagination_class = None
 
 
 class GroupDetailViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupDetailSerializer
+    pagination_class = ResultsSetPagination
 
 
 class SpaceViewSet(viewsets.ModelViewSet):
     queryset = Space.objects.all()
     serializer_class = SpaceSerializer
-    pagination_class = None
 
     def get_queryset(self):
         user = self.request.user
