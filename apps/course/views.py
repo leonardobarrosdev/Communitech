@@ -1,7 +1,8 @@
-from rest_framework import viewsets, permissions, status
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from django.utils import timezone
+from config.paginations import ResultsSetPagination
 from apps.course.models import Course, Section, Lesson, LessonProgress
 
 from .serializers import (
@@ -15,7 +16,7 @@ from .serializers import (
 class CourseViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.select_related("author").prefetch_related("sections")
     serializer_class = CourseSerializer
-    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = ResultsSetPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -24,13 +25,11 @@ class CourseViewSet(viewsets.ModelViewSet):
 class SectionViewSet(viewsets.ModelViewSet):
     queryset = Section.objects.prefetch_related("lessons")
     serializer_class = SectionSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
 
 class LessonViewSet(viewsets.ModelViewSet):
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     @action(detail=True, methods=["post"])
     def mark_complete(self, request, pk=None):
@@ -51,7 +50,6 @@ class LessonViewSet(viewsets.ModelViewSet):
 
 class LessonProgressViewSet(viewsets.ModelViewSet):
     serializer_class = LessonProgressSerializer
-    permission_classes = [permissions.IsAuthenticated]
 
     def get_queryset(self):
         return LessonProgress.objects.filter(user=self.request.user)

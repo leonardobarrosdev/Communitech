@@ -2,37 +2,32 @@ import pytest
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
+from rest_framework.authtoken.models import Token
 from django.utils import timezone
 from django.contrib.auth import get_user_model
 from apps.course.models import Course, Section, Lesson, LessonProgress
-from apps.course.serializers import SectionSerializer
 
 
 @pytest.fixture
-def api_client():
-    return APIClient()
-
-
-@pytest.fixture
-def test_user():
+def get_user():
     User = get_user_model()
     return User.objects.create_user(email="test@example.com", password="testpass")
 
 
 @pytest.fixture
-def test_course(test_user):
+def get_course(test_user):
     return Course.objects.create(
         title="Test Course", description="Test Description", author=test_user
     )
 
 
 @pytest.fixture
-def test_section(test_course):
+def get_section(test_course):
     return Section.objects.create(title="Test Section", position=1, course=test_course)
 
 
 @pytest.fixture
-def test_lesson(test_section):
+def get_lesson(test_section):
     return Lesson.objects.create(
         title="Test Lesson", content="Test Content", position=1, section=test_section
     )
@@ -40,29 +35,47 @@ def test_lesson(test_section):
 
 @pytest.mark.django_db
 class TestCourseViewSet:
-    def test_list_courses(self, api_client, test_user, test_course):
-        api_client.force_authenticate(user=test_user)
-        url = reverse("course-list")
-        response = api_client.get(url)
-        assert response.status_code == status.HTTP_200_OK
-        assert len(response.data) == 1
+    api_client = APIClient()
+    User = get_user_model()
 
-    def test_create_course(self, api_client, test_user):
-        api_client.force_authenticate(user=test_user)
-        url = reverse("course-list")
-        data = {
+    def setup_method(self):
+        self.user = self.User.objects.create_user(email="test@example.com", password="testpass")
+        token = Token.objects.create(user=self.user)
+        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
+        self.url = reverse("course-list")
+        self.data = {
             "title": "New Course",
             "description": "New Description",
             "type": "free",
             "status": "draft",
             "visibility": "public",
-            "author": str(test_user.id),
-            "author_name": test_user.get_full_name(),
-            "sections": [],
+            "author": self.user,
         }
-        response = api_client.post(url, data)
+    
+    def test_list_course_success(self):
+        Course.objects.create(**self.data)
+        response = self.api_client.get(self.url)
+        assert response.status_code == status.HTTP_200_OK
+        assert len(response.data["results"]) == 1
+    
+    def test_list_course_unauthorized(self):
+        self.api_client.logout()
+        Course.objects.create(**self.data)
+        response = self.api_client.get(self.url)
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+    def test_create_course_success(self):
+        data = self.data.copy()
+        data["author"] = str(self.user.id)
+        response = self.api_client.post(self.url, data, format="json")
         assert response.status_code == status.HTTP_201_CREATED
-        assert response.data["title"] == "New Course"
+        assert response.data["title"] == self.data["title"]
+    
+    def test_create_course_failed(self):
+        data = self.data.copy()
+        del data["author"]
+        response = self.api_client.post(self.url, data, format="json")
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.django_db
