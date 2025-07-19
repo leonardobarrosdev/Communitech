@@ -3,7 +3,8 @@ from apps.course.views import (
     CourseViewSet,
     SectionViewSet,
     LessonViewSet,
-    LessonProgressViewSet,
+    LessonProgressListView,
+    LessonProgressDetailView
 )
 
 urlpatterns = [
@@ -50,13 +51,13 @@ urlpatterns = [
     ),
     path(
         "progress/",
-        LessonProgressViewSet.as_view({"get": "list", "post": "create"}),
+        LessonProgressListView.as_view({"get": "list", "post": "create"}),
         name="lesson-progress-list",
     ),
     path(
         "progress/<uuid:pk>/",
-        LessonProgressViewSet.as_view(
-            {"get": "retrieve", "put": "update", "delete": "destroy"}
+        LessonProgressDetailView.as_view(
+            {"get": "retrieve", "patch": "update", "delete": "destroy"}
         ),
         name="lesson-progress-detail",
     ),

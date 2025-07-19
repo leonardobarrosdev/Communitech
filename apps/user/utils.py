@@ -1,11 +1,5 @@
 import threading
 from django.core.mail import EmailMessage
-from rest_framework.authentication import SessionAuthentication
-
-
-class CsrfExemptSessionAuthentication(SessionAuthentication):
-    def enforce_csrf(self, request):
-        return True  # To not perform the csrf check
 
 
 class EmailThread(threading.Thread):

@@ -3,7 +3,7 @@ from django.contrib.auth import get_user_model
 from django.urls import reverse
 from rest_framework.test import APIClient
 from rest_framework import status
-from knox.models import AuthToken
+from rest_framework.authtoken.models import Token
 from apps.community.models import Community, Group
 
 User = get_user_model()
@@ -35,8 +35,8 @@ class TestCreateCommunityAPIView:
     @pytest.fixture(autouse=True)
     def setUp(self, get_user):
         self.user = get_user
-        _, token = AuthToken.objects.create(self.user)
-        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
+        token = Token.objects.create(user=self.user)
+        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
         self.url = reverse("community-list")
         self.data = {
             "owner": self.user.id,
@@ -69,8 +69,8 @@ class TestListCommunityAPIView:
     @pytest.fixture(autouse=True)
     def setUp(self, get_user):
         self.user = get_user
-        _, token = AuthToken.objects.create(self.user)
-        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
+        token = Token.objects.create(user=self.user)
+        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
         self.url = reverse("community-list")
         self.data = {
             "owner": self.user.id,
@@ -84,11 +84,17 @@ class TestListCommunityAPIView:
         data["name"] = "Second community"
         self.api_client.post(path=self.url, data=data, format="json")
         response = self.api_client.get(path=self.url, format="json")
-        assert len(response.data) == 2
+        assert len(response.data["results"]) == 2
 
     def test_list_community_0(self):
         response = self.api_client.get(path=self.url, format="json")
-        assert len(response.data) == 0
+        assert len(response.data["results"]) == 0
+    
+    def test_list_community_unauthorized(self):
+        self.api_client.logout()
+        self.api_client.post(path=self.url, data=self.data, format="json")
+        response = self.api_client.get(path=self.url, format="json")
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
 
 
 @pytest.mark.django_db
@@ -98,8 +104,8 @@ class TestRetrieveCommunityAPIView:
     @pytest.fixture(autouse=True)
     def setUp(self, get_user):
         self.user = get_user
-        _, token = AuthToken.objects.create(self.user)
-        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
+        token = Token.objects.create(user=self.user)
+        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
         self.url = reverse("community-list")
         self.data = {
             "owner": self.user.id,
@@ -126,8 +132,8 @@ class TestUpdateCommunityAPIView:
     @pytest.fixture(autouse=True)
     def setUp(self, get_user):
         self.user = get_user
-        _, token = AuthToken.objects.create(self.user)
-        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
+        token = Token.objects.create(user=self.user)
+        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
         self.url = reverse("community-list")
         self.data = {
             "owner": self.user.id,
@@ -158,8 +164,8 @@ class TestDeleteCommunityAPIView:
     @pytest.fixture(autouse=True)
     def setUp(self, get_user):
         self.user = get_user
-        _, token = AuthToken.objects.create(self.user)
-        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
+        token = Token.objects.create(user=self.user)
+        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
         self.url = reverse("community-list")
         self.data = {
             "owner": self.user.id,
@@ -186,8 +192,8 @@ class TestListGroupView:
     @pytest.fixture(autouse=True)
     def setUp(self, get_user):
         self.user = get_user
-        _, token = AuthToken.objects.create(self.user)
-        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
+        token = Token.objects.create(user=self.user)
+        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
         self.url = reverse("group-list")
         self.community = Community.objects.create(
             owner=self.user,
@@ -228,8 +234,8 @@ class TestDetailGroupView:
     def setUp(self, get_community):
         community = get_community
         self.user = User.objects.get(id=community.owner.id)
-        _, token = AuthToken.objects.create(self.user)
-        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
+        token = Token.objects.create(user=self.user)
+        self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token.key}")
         group = Group.objects.create(name="Test group", community=community)
         self.url = reverse("group-detail", kwargs={"pk": group.id})
     

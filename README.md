@@ -1,70 +1,60 @@
----
+# Comunitu - Platform to Courses and Communities
 
-````markdown
-# Comunitu - Plataforma para Cursos e Comunidades
+**comunitu-api** is an API for building an all-in-one platform designed for creators, instructors, and communities who want to offer **online courses**, manage **private or public communities**, host **live events**, and monetize their spaces with **paid plans**.
 
-O **Comunitu** é uma plataforma tudo-em-um desenvolvida para criadores, instrutores e comunidades que desejam oferecer **cursos online**, gerenciar **comunidades privadas ou públicas**, criar **eventos ao vivo**, e monetizar seus espaços com **planos pagos**.
+This project follows a modern, modular, and scalable architecture, leveraging the Django ecosystem with Django Rest Framework.
 
-Este projeto segue uma arquitetura moderna, modular e escalável, utilizando o ecossistema Django com renderização server-side, HTMX para interatividade e Tailwind CSS para estilização rápida e responsiva.
+## 🖥️ **Technologies Useds**
 
-## 🖥️ **Tecnologias Utilizadas**
-
-- **Python 3.12**: Linguagem principal.
-- **Django 5.1**: Framework web back-end.
-- **HTMX + django-htmx**: Interatividade sem SPA.
-- **Tailwind CSS + Flowbite**: Estilo utilitário + componentes UI.
-- **PostgreSQL**: Banco de dados relacional.
-- **Cloudinary**: Armazenamento de mídia (vídeo, imagem, PDF).
-- **Stripe**: Integração de pagamentos.
-- **Docker + Docker Compose**: Ambientes isolados e deploy simplificado.
+- **Python 3.12**: Principal language.
+- **Django 5.1**: Web back-end framework.
+- **Django Rest Framework**: Rest API.
+- **PostgreSQL**: Relational database.
+- **Cloudinary**: Storage of media (video, imagem, PDF).
+- **Stripe**: Payment integration.
+- **Docker + Docker Compose**: Isolated environment and simplificated deploy.
 
 ---
 
-## 🚀 **Como executar o projeto localmente**
+## 🚀 **Runing local project**
 
-### 1. Clone o repositório:
+### 1. Clone the repository:
 ```bash
-git clone https://github.com/seu-usuario/comunitu.git
+git clone https://github.com/leonardobarrosdev/comunitu.git
 ````
 
-### 2. Acesse a pasta do projeto:
+### 2. Access the project diretory:
 
 ```bash
 cd comunitu
 ```
 
-### 3. Crie o ambiente virtual:
+### 3. Create a virtual environment:
 
-Utilize o [`uv`](https://github.com/astral-sh/uv) para instalação rápida de dependências Python:
+Use the [`uv`](https://github.com/astral-sh/uv) for fast install of Python dependences:
 
 ```bash
 uv install
 source .venv/bin/activate
 ```
 
-### 4. Crie um `.env` baseado no `.env.example`
+### 4. Create a `.env` based on `.env.example`
 
-### 5. Execute as migrações:
+### 5. Execute the migrations:
 
 ```bash
 python manage.py migrate
 ```
 
-### 6. Crie um superusuário:
+### 6. Create a superuser:
 
 ```bash
 python manage.py createsuperuser
 ```
 
-### 7. (Opcional) Popule o banco com dados fake:
+> ⚠️ Not execute this in production.
 
-```bash
-python manage.py loaddata apps/core/fixtures/*.json
-```
-
-> ⚠️ Não execute isso em produção.
-
-### 8. Inicie o servidor de desenvolvimento:
+### 8. Init the development server:
 
 ```bash
 python manage.py runserver
@@ -72,28 +62,28 @@ python manage.py runserver
 
 ---
 
-## 🌟 **Funcionalidades (MVP)**
+## 🌟 **Funtionalities (MVP)**
 
-* 📚 Gerenciamento de cursos com seções e lições
-* ✅ Rastreamento de progresso do aluno
-* 👥 Autenticação de usuários e perfis (aluno/instrutor)
-* 💳 Preparação para planos pagos com Stripe
-* 🖼️ Página pública com apresentação e planos
-* 🎥 Suporte a vídeos, PDFs, links embed e arquivos
-* 🧩 Modular e expansível para eventos e comunidade
+* 📚 Course management with sections and lessons
+* ✅ Student progress tracking
+* 👥 User and profile authentication (student/instructor)
+* 💳 Preparation for paid plans with Stripe
+* 🖼️ Public page with presentation and plans
+* 🎥 Support for videos, PDFs, embed links, and files
+* 🧩 Modular and expandable for events and communities
 
 ---
 
 ## 🔗 **Deploy**
 
-O Comunitu é preparado para ser deployado em **VPS com Docker Compose**.
-Você pode usar serviços como **Render, Railway, DigitalOcean ou AWS EC2**.
+Comunitu is ready to be deployed on a **VPS with Docker Compose**.
+You can use services like **Render, Railway, DigitalOcean, or AWS EC2**.
 
-> Em produção, recomendamos o uso de [Gunicorn](https://docs.djangoproject.com/en/5.1/howto/deployment/wsgi/gunicorn/) + NGINX.
+> In production, we recommend use of [Gunicorn](https://docs.djangoproject.com/en/5.1/howto/deployment/wsgi/gunicorn/) + NGINX.
 
 ---
 
-## 📁 **Estrutura do Projeto (resumo)**
+## 📁 **Project Structure (summary)**
 
 ```
 comunitu/
@@ -112,22 +102,20 @@ comunitu/
 
 ---
 
-## 📝 **Licença**
+## 📝 **Licese**
 
-Este projeto está licenciado sob a [Licença MIT](LICENSE).
-Uso livre para modificação e distribuição com atribuição ao autor original.
+This project is licensed under the [MIT License](LICENSE).
+Free to use, modify, and distribute with attribution.
 
 ---
 
-Se você quiser ajuda para configurar, implantar ou expandir o projeto, estou à disposição. 🚀
+If you need help setting up, deploying, or expanding your project, I'm here to help. 🚀
 
 ```
 
 ---
 
-## ✅ Próximos passos possíveis:
-- Gerar o **logo e favicon para Comunitu**
-- Gerar o **projeto base Django com esses arquivos**
-- Criar o repositório base para começar a codar
+## ✅ Next prossible steps:
+- Create user Auth using email or username (use this two options)
 
 ```

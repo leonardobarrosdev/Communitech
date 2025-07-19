@@ -67,10 +67,9 @@ class ProfileManager(BaseUserManager):
         return self.create_user(email, password, **extra_fields)
 
 
-# Create your models here.
 class Profile(AbstractUser):
     """
-    Custom User model that extends the default Django User model.
+    Profile model that extends the default Django User model.
     """
 
     ROLE_CHOICES = (

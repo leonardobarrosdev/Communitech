@@ -9,7 +9,7 @@
 ### 1.1. Autenticação e Autorização
 
 * Registro e login de usuários com e-mail e senha.
-* Logout com expiração de token (via DRF Knox).
+* Logout com expiração de token (via DRF token).
 * Middleware para proteger rotas autenticadas.
 * Controle de permissões por função (admin, moderador, membro).
 * Atribuição de acesso a espaços ou cursos com base em pagamento.

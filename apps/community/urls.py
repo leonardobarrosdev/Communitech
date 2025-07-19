@@ -1,5 +1,5 @@
 from django.urls import path
-from community.views import (
+from apps.community.views import (
     CommunityViewSet,
     CommunityUpdateView,
     GroupViewSet,

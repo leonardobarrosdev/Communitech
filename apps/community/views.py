@@ -1,7 +1,6 @@
 from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
 from django.db.models import Q
-from knox.auth import TokenAuthentication
+from config.paginations import ResultsSetPagination
 from apps.community.models import Community, Group, Space
 from apps.community.serializers import (
     CommunitySerializer,
@@ -15,36 +14,29 @@ from apps.community.serializers import (
 class CommunityViewSet(viewsets.ModelViewSet):
     queryset = Community.objects.all()
     serializer_class = CommunitySerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    pagination_class = ResultsSetPagination
 
 
 class CommunityUpdateView(viewsets.ModelViewSet):
     queryset = Community.objects.all()
     serializer_class = CommunityUpdateSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    pagination_class = ResultsSetPagination
 
 
 class GroupViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
 
 
 class GroupDetailViewSet(viewsets.ModelViewSet):
     queryset = Group.objects.all()
     serializer_class = GroupDetailSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = (IsAuthenticated,)
+    pagination_class = ResultsSetPagination
 
 
 class SpaceViewSet(viewsets.ModelViewSet):
     queryset = Space.objects.all()
     serializer_class = SpaceSerializer
-    authentication_classes = (TokenAuthentication,)
-    permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
         user = self.request.user

@@ -1,5 +1,5 @@
 import pytest
-from knox.models import AuthToken
+from rest_framework.authtoken.models import Token
 from django.urls import reverse
 from rest_framework import status
 from rest_framework.test import APIClient
@@ -54,13 +54,62 @@ class TestRegisterAPIView:
 
 
 @pytest.mark.django_db
+class TestLoginView:
+    api_client = APIClient()
+
+    def setup_method(self):
+        self.data = {
+            "username": "testUser",
+            "email": "test@company.com",
+            "password": "Pass1234",
+        }
+        self.user = Profile.objects.create_user(**self.data)
+        self.url = reverse("profile:login")
+        del self.data["username"]
+
+    def test_login_success(self):
+        response = self.api_client.post(path=self.url, data=self.data, format="json")
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["user"]["email"] == self.data["email"]
+
+    def test_login_failed(self):
+        data = self.data.copy()
+        del data["password"]
+        response = self.api_client.post(path=self.url, data=data, format="json")
+        assert response.status_code == status.HTTP_400_BAD_REQUEST
+        assert "password" in response.data
+
+
+@pytest.mark.django_db
+class TestLogoutView:
+    api_client = APIClient()
+
+    def setup_method(self):
+        profile = Profile.objects.create_user(
+            first_name="Test", email="test@company.com", password="StringPass123"
+        )
+        token = Token.objects.create(user=profile)
+        self.api_client.credentials(HTTP_AUTHORIZATION=f"token {token.key}")
+        self.url = reverse("profile:logout")
+
+    def test_logout_success(self):
+        response = self.api_client.post(path=self.url, format="json")
+        assert response.status_code == status.HTTP_200_OK
+
+    def test_logout_failed(self):
+        self.api_client.logout()
+        response = self.api_client.get(path=self.url, format="json")
+        assert response.status_code == status.HTTP_401_UNAUTHORIZED
+
+
+@pytest.mark.django_db
 class TestUpdateProfileAPIView:
     def setup_method(self):
         self.profile = Profile.objects.create_user(
             first_name="Test", email="test@company.com", password="StringPass123"
         )
         self.api_client = APIClient()
-        _, token = AuthToken.objects.create(self.profile)
+        token = Token.objects.create(user=self.profile)
         self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
         self.url = reverse("profile:update", kwargs={"id": self.profile.id})
         self.data = {"first_name": "Johny", "last_name": "Test"}
@@ -86,7 +135,7 @@ class TestUpdateAuthAPIView:
             first_name="Test", email="test@company.com", password="StringPass123"
         )
         self.api_client = APIClient()
-        _, token = AuthToken.objects.create(self.profile)
+        token = Token.objects.create(user=self.profile)
         self.api_client.credentials(HTTP_AUTHORIZATION=f"Token {token}")
         self.url = reverse("profile:update-auth", kwargs={"id": self.profile.id})
         self.data = {"email": "contact@company.com"}

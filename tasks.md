@@ -5,7 +5,7 @@
 ## 🔐 Autenticação e Usuários
 - [x] Criar modelo customizado de usuário (`User` com `AbstractUser`)
 - [x] Registro de usuários
-- [x] Login via DRF Knox
+- [x] Login via DRF
 - [x] Logout com expiração de token
 - [x] Middleware de proteção para rotas privadas
 - [ ] Painel de perfil do usuário (API)
@@ -101,7 +101,7 @@
 
 ## 🧪 Testes e Qualidade
 - [x] Setup do Pytest
-- [ ] Cobertura mínima de 80% nos módulos core
-- [ ] Testes para views, modelos e permissões
-- [ ] Linting com `flake8`
-- [ ] Formatação com `black`
+- [x] Cobertura mínima de 80% nos módulos core
+- [x] Testes para views, modelos e permissões
+- [x] Linting com `flake8`
+- [x] Formatação com `black`
