@@ -9,7 +9,8 @@ from .serializers import (
     CourseSerializer,
     SectionSerializer,
     LessonSerializer,
-    LessonProgressSerializer,
+    LessonProgressListSerializer,
+    LessonProgressDetailSerializer
 )
 
 
@@ -48,8 +49,15 @@ class LessonViewSet(viewsets.ModelViewSet):
         )
 
 
-class LessonProgressViewSet(viewsets.ModelViewSet):
-    serializer_class = LessonProgressSerializer
+class LessonProgressListView(viewsets.ModelViewSet):
+    serializer_class = LessonProgressListSerializer
+
+    def get_queryset(self):
+        return LessonProgress.objects.filter(user=self.request.user)
+
+
+class LessonProgressDetailView(viewsets.ModelViewSet):
+    serializer_class = LessonProgressDetailSerializer
 
     def get_queryset(self):
         return LessonProgress.objects.filter(user=self.request.user)

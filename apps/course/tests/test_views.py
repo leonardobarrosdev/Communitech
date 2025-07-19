@@ -98,7 +98,7 @@ class TestLessonViewSet:
 
 
 @pytest.mark.django_db
-class TestLessonProgressViewSet:
+class TestLessonProgressView:
     api_client = APIClient()
     User = get_user_model()
 
@@ -115,13 +115,16 @@ class TestLessonProgressViewSet:
         self.lesson = Lesson.objects.create(
             title="Test Lesson", content="Test Content", position=1, section=self.section
         )
-        self.lession_progress = LessonProgress.objects.create(
+        self.lesson_progress = LessonProgress.objects.create(
             user=self.user,
             lesson=self.lesson,
-            completed=True,
+            completed=False,
             completed_at=timezone.now(),
         )
         self.url = reverse("lesson-progress-list")
+        self.url_id = reverse(
+            "lesson-progress-detail", kwargs={"pk": self.lesson_progress.id}
+        )
 
     def test_list_progress_success(self):
         response = self.api_client.get(self.url)
@@ -132,3 +135,18 @@ class TestLessonProgressViewSet:
         self.api_client.logout()
         response = self.api_client.get(self.url)
         assert response.status_code == status.HTTP_401_UNAUTHORIZED
+    
+    def test_retrieve_lesson_progress_success(self):
+        response = self.api_client.get(self.url_id)
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["id"] == str(self.lesson_progress.id)
+    
+    def test_update_lesson_progress(self):
+        data = {"completed": True}
+        response = self.api_client.patch(path=self.url_id, data=data, format="json")
+        assert response.status_code == status.HTTP_200_OK
+        assert response.data["completed"] == data["completed"]
+    
+    def test_destroy_lesson_progress(self):
+        response = self.api_client.delete(self.url_id)
+        assert response.status_code == status.HTTP_204_NO_CONTENT

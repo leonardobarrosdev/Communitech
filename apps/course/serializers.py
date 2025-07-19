@@ -50,7 +50,19 @@ class CourseSerializer(serializers.ModelSerializer):
         ]
 
 
-class LessonProgressSerializer(serializers.ModelSerializer):
+class LessonProgressListSerializer(serializers.ModelSerializer):
     class Meta:
         model = LessonProgress
         fields = ["id", "user", "lesson", "completed", "completed_at"]
+
+
+class LessonProgressDetailSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = LessonProgress
+        fields = ["id", "user", "lesson", "completed", "completed_at"]
+        read_only_fields = ["id", "user", "completed_at"]
+        extra_kwargs = {
+            "lesson": {"required": False},
+            "completed": {"required": False},
+            "completed_at": {"required": False}
+        }
